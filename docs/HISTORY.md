@@ -9,3 +9,5 @@
 | 2026-11-19 | Public repository prepared; next experiment split into five issues | [Issue index](ISSUES.md) |
 
 Original raw evidence remains in the private experiment workspace. These historical results precede this repository's initial commit. The Git history records the public export and subsequent work; it is not a retrospective preregistration of the pilot.
+
+The [pilot-v2-public-baseline tag](https://github.com/dsikar/fesa-llm-experiments/tree/pilot-v2-public-baseline) fixes the initial public export. Future implementations should reference their issue in commits and link the frozen design, reviewed aggregate results and analysis revision in the issue before closure.
