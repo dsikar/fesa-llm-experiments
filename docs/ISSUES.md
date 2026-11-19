@@ -1,5 +1,7 @@
 # Experiment issues
 
+**[Dependency diagram, readiness gates and parallel work](DEPENDENCIES.md)** · [Machine-readable prerequisites](../configs/issue-dependencies.toml). GitHub issues also carry native blocked-by/blocking links.
+
 Milestone: [v3: prompt and demonstration-count experiment](https://github.com/dsikar/fesa-llm-experiments/milestone/1).
 
 | Step | Issue | Specification |
@@ -16,7 +18,9 @@ The issues describe planned work. The completed pilot is documented separately i
 
 ## Attribute-count extension
 
-Front-loaded [target table and JSON contract](CAPACITY_RESULTS.md); [machine-readable planned arms](../results/public/capacity-plan.json). The #7 schema, validator, renderer and synthetic tests are implemented. Issue #7 stays open for review. No new model requests. GitHub #6 was already used by the merged prompt PR, so these tickets start at #7.
+**#7 remains open: its unmerged implementation needs review of fixes for five findings.** It is not an accepted prerequisite.
+
+Front-loaded [target table and JSON contract](CAPACITY_RESULTS.md); [machine-readable planned arms](../results/public/capacity-plan.json). The #7 schema, validator, renderer and synthetic tests are implemented. No new model requests. GitHub #6 was already used by the merged prompt PR, so these tickets start at #7.
 
 | Issue | Specification | Depends on |
 |---|---|---|

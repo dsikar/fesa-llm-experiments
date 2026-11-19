@@ -9,6 +9,7 @@ The completed pilot produced 800 responses from 200 distinct records. Phishing a
 - [Domain prompts and feature policy](docs/PROMPTS.md)
 - [Synthetic prompt examples](docs/PROMPT_EXAMPLES.md)
 - [Attribute-count experiment and target results table](docs/CAPACITY_RESULTS.md)
+- [Ticket dependencies and work available now](docs/DEPENDENCIES.md)
 - [Tracked issues](docs/ISSUES.md)
 - [Experiment history](docs/HISTORY.md)
 - [Publication boundary](docs/PUBLICATION.md)

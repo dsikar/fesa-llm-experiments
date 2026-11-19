@@ -1,0 +1,63 @@
+# Direct prerequisite gates, not post-run reporting/issue-closure requirements.
+# See docs/DEPENDENCIES.md for coordination links and phased readiness.
+schema_version = 1
+
+[[issues]]
+number = 1
+title = "Domain prompts and feature policy"
+prerequisites = []
+gate = "None"
+
+[[issues]]
+number = 2
+title = "0/4/10 demonstration experiment"
+prerequisites = [1, 3, 4, 5]
+gate = "Runner/design work can start; no model requests until #3 design/tests, #4 baseline split and #5 evidence capture are ready"
+
+[[issues]]
+number = 3
+title = "Label order, schedule and transition analysis"
+prerequisites = [1]
+gate = "Freeze analysis, schedule and synthetic tests before #2/#10; populate final reports after collection"
+
+[[issues]]
+number = 4
+title = "Held-out queries and demonstration pool"
+prerequisites = [1]
+gate = "Baseline splits can proceed using primary-v1; capacity split amendments also consume #8/#9 before #10"
+
+[[issues]]
+number = 5
+title = "Immutable evidence and safe export"
+prerequisites = []
+gate = "Build generic capture/resume now; agree schema boundary with #7 and integrate it for capacity runs"
+
+[[issues]]
+number = 7
+title = "Results contract and generated table"
+prerequisites = []
+gate = "Fix the five review findings and obtain acceptance; coordinate with #5 without a mutual blocking dependency"
+
+[[issues]]
+number = 8
+title = "Dataset and maximum-feature audit"
+prerequisites = [1, 7]
+gate = "Private copies already exist; provenance/schema/leakage inspection can proceed; final validated exports need #7"
+
+[[issues]]
+number = 9
+title = "Duplicate/conflict audit and empirical ceilings"
+prerequisites = [7, 8]
+gate = "Synthetic algorithm development can start; real feature projections require #8 and validated output requires #7"
+
+[[issues]]
+number = 10
+title = "Maximum-attribute classification"
+prerequisites = [3, 4, 5, 7, 8, 9]
+gate = "Coordinate #2 demonstration design; require the #4 capacity split amendment informed by #8/#9, plus a frozen budget"
+
+[[issues]]
+number = 11
+title = "Cross-provider coding-agent benchmark"
+prerequisites = []
+gate = "Reuse #5/#7 conventions where useful; neither blocks benchmark preparation; freeze access/configuration/budget before paid trials"
