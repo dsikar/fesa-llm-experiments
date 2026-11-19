@@ -18,9 +18,9 @@ The issues describe planned work. The completed pilot is documented separately i
 
 ## Attribute-count extension
 
-**#7 remains open: its unmerged implementation needs fixes for five review findings.** It is not an accepted prerequisite.
+**#7 remains open: its unmerged implementation needs review of fixes for five findings.** It is not an accepted prerequisite.
 
-Front-loaded [target table and JSON contract](CAPACITY_RESULTS.md); [machine-readable planned arms](../results/public/capacity-plan.json). No new model requests. GitHub #6 was already used by the merged prompt PR, so these tickets start at #7.
+Front-loaded [target table and JSON contract](CAPACITY_RESULTS.md); [machine-readable planned arms](../results/public/capacity-plan.json). The #7 schema, validator, renderer and synthetic tests are implemented. No new model requests. GitHub #6 was already used by the merged prompt PR, so these tickets start at #7.
 
 | Issue | Specification | Depends on |
 |---|---|---|

@@ -18,6 +18,8 @@ Excluded:
 
 The public aggregate JSON is projected onto an explicit set of fields. It is not a copy of the private analysis file. Public checks recompute metrics from aggregate counts; they cannot independently establish row pairing or rerun private-data inference.
 
+The capacity contract uses the same rule. `scripts/capacity_contract.py` exports an allowlist. Schemas live in `schemas/` and are tracked by exact path. `tests/fixtures/capacity/synthetic-aggregate.json` is a labelled fixture, not an observed result. `results/public/capacity-results.json` stays ignored until a reviewed observed aggregate is published. Private run directories, JSONL prediction logs and dataset files stay ignored.
+
 Before publishing a change:
 
 1. Review the staged diff and file list.

@@ -37,6 +37,8 @@ results/*
 results/public/*
 !results/public/pilot-v2.json
 !results/public/capacity-plan.json
+# capacity-results.json stays ignored until a reviewed observed aggregate exists.
+# Do not unignore private/, *.jsonl, *.csv, *.arff or the rest of results/public/.
 
 # Python and editor files
 __pycache__/

@@ -5,6 +5,18 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+# Reviewed JSON outside results/public is allowlisted by exact path.
+# results/public/capacity-results.json is intentionally not listed: it stays
+# ignored until a real reviewed aggregate exists. Synthetic fixtures must carry
+# the SYNTHETIC FIXTURE banner. Do not add private/, *.jsonl or raw data here.
+ALLOWED_JSON = {
+    "schemas/capacity-aggregate-v1.schema.json": "schema",
+    "schemas/capacity-condition-private-v1.schema.json": "schema",
+    "schemas/capacity-prediction-private-v1.schema.json": "schema",
+    "schemas/capacity-plan-v1.schema.json": "schema",
+    "schemas/evidence-run-v1.schema.json": "schema",
+    "tests/fixtures/capacity/synthetic-aggregate.json": "synthetic",
+}
 RULES = {
     "GitHub credential": r"\b(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{30,})\b",
     "cloud access key": r"\b(?:AKIA|ASIA)[A-Z0-9]{16}\b",
@@ -26,7 +38,13 @@ def findings(path, text):
     if path.suffix.lower() in {".pt", ".pth", ".npy", ".npz", ".safetensors", ".arff", ".jsonl", ".csv", ".bin", ".exe", ".dll", ".log", ".pem", ".key"}:
         errors.append("raw/binary artifact extension")
     if path.suffix.lower() == ".json" and path.parts[:2] != ("results", "public"):
-        errors.append("unreviewed JSON location")
+        kind = ALLOWED_JSON.get(path.as_posix())
+        if kind == "schema" and '"$schema"' not in text:
+            errors.append("schema marker missing")
+        elif kind == "synthetic" and "SYNTHETIC FIXTURE" not in text:
+            errors.append("synthetic fixture marker missing")
+        elif kind is None:
+            errors.append("unreviewed JSON location")
     return errors
 
 

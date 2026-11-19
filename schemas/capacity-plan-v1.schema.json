@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dsikar/fesa-llm-experiments/schemas/capacity-plan-v1.schema.json",
+  "title": "Capacity planning inventory v1",
+  "description": "Not an observed-results aggregate. Observed metrics in the frozen inventory stay null.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "model_requests_made",
+    "conditions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "artifact_type": {
+      "const": "planning_inventory"
+    },
+    "model_requests_made": {
+      "const": 0
+    },
+    "conditions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "dataset_id",
+          "dataset_type",
+          "n_source_columns",
+          "n_non_label_attributes",
+          "label_columns_excluded",
+          "n_source_train_rows",
+          "n_source_test_rows",
+          "n_source_rows",
+          "n_attributes_input",
+          "n_queries_planned",
+          "status",
+          "status_reason",
+          "accuracy",
+          "balanced_accuracy",
+          "malicious_precision",
+          "malicious_recall",
+          "malicious_f1",
+          "false_positive_rate",
+          "completion_rate",
+          "n_conflicting_groups",
+          "empirical_accuracy_ceiling"
+        ],
+        "properties": {
+          "dataset_id": {
+            "type": "string"
+          },
+          "dataset_type": {
+            "enum": [
+              "phishing",
+              "malware"
+            ]
+          },
+          "n_source_columns": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "n_non_label_attributes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "label_columns_excluded": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "n_source_train_rows": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer"
+              }
+            ]
+          },
+          "n_source_test_rows": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer"
+              }
+            ]
+          },
+          "n_source_rows": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "status": {
+            "const": "planned"
+          },
+          "status_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "n_attributes_input": {
+            "type": "null"
+          },
+          "n_queries_planned": {
+            "type": "null"
+          },
+          "accuracy": {
+            "type": "null"
+          },
+          "balanced_accuracy": {
+            "type": "null"
+          },
+          "malicious_precision": {
+            "type": "null"
+          },
+          "malicious_recall": {
+            "type": "null"
+          },
+          "malicious_f1": {
+            "type": "null"
+          },
+          "false_positive_rate": {
+            "type": "null"
+          },
+          "completion_rate": {
+            "type": "null"
+          },
+          "n_conflicting_groups": {
+            "type": "null"
+          },
+          "empirical_accuracy_ceiling": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  }
+}

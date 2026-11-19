@@ -1,0 +1,2 @@
+# Independent Draft 2020-12 schema validation in offline contract tests.
+jsonschema==4.10.3

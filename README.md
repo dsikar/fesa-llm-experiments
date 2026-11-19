@@ -19,8 +19,13 @@ The repository contains aggregate results, offline prompt tools and planning mat
 Verify the public results offline:
 
 ```bash
+python3 -m pip install -r requirements-test.txt
 python3 scripts/verify_baseline.py
 python3 scripts/render_baseline.py --check
 python3 -m unittest discover -s tests -v
 python3 scripts/check_public_tree.py
+python3 scripts/render_capacity.py --planning
+python3 scripts/render_capacity.py --synthetic
 ```
+
+`--synthetic` prints a labelled fixture. It does not report an experiment. `results/public/capacity-results.json` is reserved for a later reviewed aggregate.
