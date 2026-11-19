@@ -6,6 +6,7 @@ The completed pilot produced 800 responses from 200 distinct records. Phishing a
 
 - [Pilot results and limits](docs/PILOT_V2.md)
 - [Next experiment](docs/EXPERIMENT_PLAN.md)
+- [Label-order schedule and paired analysis](docs/LABEL_ORDER.md)
 - [Domain prompts and feature policy](docs/PROMPTS.md)
 - [Synthetic prompt examples](docs/PROMPT_EXAMPLES.md)
 - [Attribute-count experiment and target results table](docs/CAPACITY_RESULTS.md)

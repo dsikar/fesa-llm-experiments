@@ -21,3 +21,11 @@ Synthetic tests pass; every demonstration-count condition reports accuracy effec
 ## Dependencies
 
 Coordinate with steps 1, 2 and 5 before collection.
+
+## Implementation delivery
+
+The pre-collection implementation is available in [LABEL_ORDER.md](../LABEL_ORDER.md), the additive `label-order-v1` configuration/freeze and the offline scheduling/analysis tools. It fixes 20-query counterbalanced A/B blocks, the 2,400-request primary matrix with no retries, exact paired tests and separate Holm families. It rejects incomplete or mismatched private registrations/evidence and reports full prediction transitions separately from correctness.
+
+Synthetic verification: 39 tests pass across the repository, including the new complete-reversal, symmetric-flip, fixed-family, schedule and evidence-integrity checks. Historical pilot aggregates/reports and the primary-v1 freeze remain unchanged. No model requests were made.
+
+This supplies the prospective implementation/design gate for review. Actual condition reports remain pending #2 collection after #4/#5 readiness; issue #3 stays open until that reporting acceptance is met. The implementation does not depend on Grok's unmerged #7 branch.

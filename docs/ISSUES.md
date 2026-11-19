@@ -14,6 +14,8 @@ Milestone: [v3: prompt and demonstration-count experiment](https://github.com/ds
 
 Step 2 requires steps 1, 3, 4 and 5 before model requests. Steps 1, 3 and 4 can be prepared alongside the evidence infrastructure in step 5. Changes to the experimental design must be recorded before collection.
 
+**#3 pre-run design/tools implemented:** [schedule, analysis and evidence interface](LABEL_ORDER.md); actual per-condition reports await #2 collection. No new requests.
+
 The issues describe planned work. The completed pilot is documented separately in [PILOT_V2.md](PILOT_V2.md).
 
 ## Attribute-count extension
