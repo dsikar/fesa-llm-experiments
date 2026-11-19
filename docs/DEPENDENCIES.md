@@ -47,7 +47,7 @@ Solid arrows are prerequisite gates, recorded natively on GitHub. Dotted arrows 
 | [#3](https://github.com/dsikar/fesa-llm-experiments/issues/3) Label order, schedule and transition analysis | #1 | Ready to start | 2, 10 |
 | [#4](https://github.com/dsikar/fesa-llm-experiments/issues/4) Held-out queries and demonstration pool | #1 | Ready to start for the baseline | 2, 10 |
 | [#5](https://github.com/dsikar/fesa-llm-experiments/issues/5) Immutable evidence and safe export | None | Ready to start; coordinate with #7 | 2, 10 |
-| [#7](https://github.com/dsikar/fesa-llm-experiments/issues/7) Results contract and generated table | None | Changes required; open and unmerged | 8, 9, 10 |
+| [#7](https://github.com/dsikar/fesa-llm-experiments/issues/7) Results contract and generated table | None | Review passed; ready for integration; open and unmerged | 8, 9, 10 |
 | [#8](https://github.com/dsikar/fesa-llm-experiments/issues/8) Dataset and maximum-feature audit | #1, #7 | Inventory can start; final contract output waits for #7 | 9, 10 |
 | [#9](https://github.com/dsikar/fesa-llm-experiments/issues/9) Duplicate/conflict audit and empirical ceilings | #7, #8 | Final audit waits for #7/#8 | 10 |
 | [#10](https://github.com/dsikar/fesa-llm-experiments/issues/10) Maximum-attribute classification | #3, #4, #5, #7, #8, #9 | Waiting for audit and execution gates | None |
@@ -60,7 +60,7 @@ Solid arrows are prerequisite gates, recorded natively on GitHub. Dotted arrows 
 - **#3:** Freeze analysis, schedule and synthetic tests before #2/#10; populate final reports after collection.
 - **#4:** Baseline splits can proceed using primary-v1; capacity split amendments also consume #8/#9 before #10.
 - **#5:** Build generic capture/resume now; agree schema boundary with #7 and integrate it for capacity runs.
-- **#7:** Fix the five review findings and obtain acceptance; coordinate with #5 without a mutual blocking dependency.
+- **#7:** Integrate the independently reviewed contract and record acceptance; coordinate with #5 without a mutual blocking dependency.
 - **#8:** Private copies already exist; provenance/schema/leakage inspection can proceed; final validated exports need #7.
 - **#9:** Synthetic algorithm development can start; real feature projections require #8 and validated output requires #7.
 - **#10:** Coordinate #2 demonstration design; require the #4 capacity split amendment informed by #8/#9, plus a frozen budget.
@@ -72,7 +72,7 @@ A prerequisite link means the supporting implementation or design must pass its 
 
 ## Work available now
 
-1. Repair/review **#7** and develop **#5** in parallel, agreeing their schema/storage boundary.
+1. Integrate reviewed **#7** and develop **#5** in parallel, agreeing their schema/storage boundary.
 2. Prepare **#3** and the baseline part of **#4** now; #1 is already complete.
 3. Start **#8** inventory/provenance inspection now; finalize its validated output once #7 is accepted. Then complete **#9** and freeze the #4 capacity split amendment.
 4. Run **#2** only once its execution gates are met. Run **#10** once its additional feature/collision gates and frozen request budget are met. Decide explicitly whether #2/#10 share a matrix; do not duplicate or silently change request budgets.

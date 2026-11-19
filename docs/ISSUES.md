@@ -18,7 +18,7 @@ The issues describe planned work. The completed pilot is documented separately i
 
 ## Attribute-count extension
 
-**#7 remains open: its unmerged implementation needs review of fixes for five findings.** It is not an accepted prerequisite.
+**#7 remains open and unmerged: independent review verified the five fixes and an additional zero-request blocked-run regression.** [Review outcome](ISSUE_7_REVIEW.md). The reviewed branch is ready for integration; downstream gates remain pending merge.
 
 Front-loaded [target table and JSON contract](CAPACITY_RESULTS.md); [machine-readable planned arms](../results/public/capacity-plan.json). The #7 schema, validator, renderer and synthetic tests are implemented. No new model requests. GitHub #6 was already used by the merged prompt PR, so these tickets start at #7.
 

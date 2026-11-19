@@ -304,5 +304,37 @@ class CapacityReview(unittest.TestCase):
         self.reject_export(run, "group counts")
 
 
+    def test_zero_request_blocked_run_can_be_published_but_a_plan_cannot(self):
+        # Simulate the observed export path in memory; no real run or public file.
+        run = copy.deepcopy(self.run)
+        blocked = next(c for c in run["conditions"] if c["status"] == "blocked")
+        planned = next(c for c in run["conditions"] if c["status"] == "planned")
+        run["conditions"] = [blocked, planned]
+        run["predictions"] = [r for r in run["predictions"] if r["condition_id"] == blocked["condition_id"]]
+        run["audits"] = []
+        run.update(run_id="review-zero-request-run", evidence_class="observed",
+                   reviewed_aggregate_revision="review-zero-request-v1", code_revision="review-code-v1")
+        for record in run["conditions"]:
+            record.update(run_id=run["run_id"], code_revision=run["code_revision"],
+                          reviewed_aggregate_revision=run["reviewed_aggregate_revision"])
+            if record["status"] != "planned":
+                record["observation_source"] = "observed"
+            record["unavailable_reasons"] = c.expected_unavailable(record)
+        for row in run["predictions"]:
+            row["run_id"] = run["run_id"]
+        aggregate = c.export_public_aggregate(run)
+        Draft202012Validator(c.aggregate_schema()).validate(aggregate)
+        self.assertEqual(aggregate["model_requests_made"], 0)
+        self.assertEqual(next(r for r in aggregate["conditions"] if r["status"] == "blocked")["completion_rate"], 0.0)
+        self.assertIn("blocked", c.render_table(aggregate))
+        bad = copy.deepcopy(aggregate)
+        bad["model_requests_made"] = 1
+        with self.assertRaisesRegex(c.CapacityContractError, "aggregate request rollup"):
+            c.validate_aggregate(bad)
+        run["conditions"] = [planned]
+        run["predictions"] = []
+        self.reject_export(run, "needs an observed condition")
+
+
 if __name__ == "__main__":
     unittest.main()
