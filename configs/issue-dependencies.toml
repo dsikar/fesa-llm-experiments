@@ -61,4 +61,3 @@ number = 11
 title = "Cross-provider coding-agent benchmark"
 prerequisites = []
 gate = "Reuse #5/#7 conventions where useful; neither blocks benchmark preparation; freeze access/configuration/budget before paid trials"
-
