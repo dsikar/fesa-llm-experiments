@@ -1,0 +1,47 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*api_key*
+*credentials*
+.ssh/
+.aws/
+
+# Private data, raw runs and local audit material
+data/
+private/
+local/
+runs/
+logs/
+audit-artifacts/
+WORKLOG.md
+*sample*.json
+*manifest*.json
+*.jsonl
+*.csv
+*.log
+*.arff
+*.pt
+*.pth
+*.npy
+*.npz
+*.safetensors
+*.bin
+*.exe
+*.dll
+results/*
+!results/public/
+results/public/*
+!results/public/pilot-v2.json
+
+# Python and editor files
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.swp
+*.swo
+.DS_Store

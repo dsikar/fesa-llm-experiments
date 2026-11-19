@@ -1,0 +1,27 @@
+name: Experiment
+description: Propose a reproducible classification experiment
+title: "[Experiment] "
+labels: [experiment]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Research question
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: Conditions, dataset split and request budget
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Acceptance criteria and saved artifacts
+    validations:
+      required: true
+  - type: textarea
+    id: publication
+    attributes:
+      label: Public versus private artifacts
