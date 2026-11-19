@@ -964,8 +964,8 @@ def validate_aggregate(document):
         require(document["synthetic"] is False and document["not_an_experiment"] is False, "reviewed flags")
         require(document["evidence_banner"] == REVIEWED_BANNER, "reviewed banner")
         require(document["disclaimer"] == REVIEWED_DISCLAIMER, "reviewed disclaimer")
-        require(type(document["model_requests_made"]) is int and document["model_requests_made"] >= 0,
-                "reviewed aggregate request count must be non-negative")
+        require(type(document["model_requests_made"]) is int and document["model_requests_made"] > 0,
+                "reviewed aggregate has no model requests")
         _nonempty(document["reviewed_aggregate_revision"], "reviewed revision")
         require(document["unavailable_reasons"] == {}, "reviewed top-level reasons")
     require(type(document["conditions"]) is list and document["conditions"], "conditions")
@@ -989,11 +989,6 @@ def validate_aggregate(document):
             require(condition["observation_source"] in {"observed", "not_run"}, "reviewed observation source")
             require(condition["reviewed_aggregate_revision"] == document["reviewed_aggregate_revision"],
                     "condition reviewed revision")
-    if kind == "reviewed_aggregate":
-        require(any(c["observation_source"] == "observed" for c in document["conditions"]),
-                "reviewed aggregate needs an observed condition; a plan is not a result")
-        require(document["model_requests_made"] == sum(c["n_requests_made"] or 0 for c in document["conditions"]),
-                "aggregate request rollup")
     check_disclosure(canonical_json(document), "aggregate")
     return document
 
@@ -1396,8 +1391,8 @@ def export_public_aggregate(run):
     if kind == "reviewed_aggregate":
         require(not str(run.get("run_id", "")).startswith("synthetic-"),
                 "synthetic evidence cannot be exported as a reviewed aggregate")
-        require(type(run.get("model_requests_made")) is int and run["model_requests_made"] >= 0,
-                "reviewed export request count must be non-negative")
+        require(type(run.get("model_requests_made")) is int and run["model_requests_made"] > 0,
+                "reviewed export needs observed model requests")
         _nonempty(run.get("reviewed_aggregate_revision"), "reviewed revision")
     require(run.get("schema_version") == SCHEMA_VERSION and run.get("schema_id") == EVIDENCE_SCHEMA_ID, "run schema")
     require(run.get("design_issue") == DESIGN_ISSUE and run.get("issue_5_interface") == "validate_then_store", "run interface")

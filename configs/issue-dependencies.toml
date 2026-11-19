@@ -36,7 +36,7 @@ gate = "Build generic capture/resume now; agree schema boundary with #7 and inte
 number = 7
 title = "Results contract and generated table"
 prerequisites = []
-gate = "Integrate the independently reviewed contract and record acceptance; coordinate with #5 without a mutual blocking dependency"
+gate = "Fix the five review findings and obtain acceptance; coordinate with #5 without a mutual blocking dependency"
 
 [[issues]]
 number = 8
