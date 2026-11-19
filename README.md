@@ -6,11 +6,13 @@ The completed pilot produced 800 responses from 200 distinct records. Phishing a
 
 - [Pilot results and limits](docs/PILOT_V2.md)
 - [Next experiment](docs/EXPERIMENT_PLAN.md)
+- [Domain prompts and feature policy](docs/PROMPTS.md)
+- [Synthetic prompt examples](docs/PROMPT_EXAMPLES.md)
 - [Tracked issues](docs/ISSUES.md)
 - [Experiment history](docs/HISTORY.md)
 - [Publication boundary](docs/PUBLICATION.md)
 
-The repository contains aggregate results and planning material. Original records, prompts containing real records, responses, embeddings, credentials and local infrastructure metadata stay private. The next experiment has not run.
+The repository contains aggregate results, offline prompt tools and planning material. Original records, prompts containing real records, responses, embeddings, credentials and local infrastructure metadata stay private. The next experiment has not run. Prompt tools require Python 3.11 or later.
 
 Verify the public results offline:
 
