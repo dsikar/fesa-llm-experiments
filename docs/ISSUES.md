@@ -24,3 +24,7 @@ Front-loaded [target table and JSON contract](CAPACITY_RESULTS.md); [machine-rea
 | [#8 — Inventory FeSAD datasets and freeze maximum non-label feature policies](https://github.com/dsikar/fesa-llm-experiments/issues/8) | [Versioned request](requests/07-capacity-dataset-audit.md) | #7; #1/#4/#5 coordination |
 | [#9 — Measure feature-reduction duplicates, conflicting labels and empirical ceilings](https://github.com/dsikar/fesa-llm-experiments/issues/9) | [Versioned request](requests/08-capacity-collisions.md) | #7/#8; #4/#5 coordination |
 | [#10 — Run paired maximum-attribute classification and publish feature-count metrics](https://github.com/dsikar/fesa-llm-experiments/issues/10) | [Versioned request](requests/09-capacity-experiment.md) | #7–#9 and #2–#5 readiness |
+
+## Coding-agent benchmark
+
+[#11 — Benchmark coding agents across providers for correctness, speed, cost and supervision](https://github.com/dsikar/fesa-llm-experiments/issues/11): [versioned design and target output](requests/10-agent-benchmark.md). Covers Anthropic, Google, DeepSeek, Alibaba/Qwen and Mistral, with Grok/Codex reference configurations. Separate from the classification experiments; no trials have run. Coordinates evidence conventions with #5/#7 and leaves Grok’s active #7 implementation in place.
