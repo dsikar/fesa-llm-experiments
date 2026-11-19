@@ -44,7 +44,7 @@ Solid arrows are prerequisite gates, recorded natively on GitHub. Dotted arrows 
 |---|---|---|---|
 | [#1](https://github.com/dsikar/fesa-llm-experiments/issues/1) Domain prompts and feature policy | None | Complete and merged | 2, 3, 4, 8 |
 | [#2](https://github.com/dsikar/fesa-llm-experiments/issues/2) 0/4/10 demonstration experiment | #1, #3, #4, #5 | Waiting for execution prerequisites | No closure prerequisite; coordinates the #10 run design |
-| [#3](https://github.com/dsikar/fesa-llm-experiments/issues/3) Label order, schedule and transition analysis | #1 | Ready to start | 2, 10 |
+| [#3](https://github.com/dsikar/fesa-llm-experiments/issues/3) Label order, schedule and transition analysis | #1 | Pre-run tools implemented; review pending; final reports after collection | 2, 10 |
 | [#4](https://github.com/dsikar/fesa-llm-experiments/issues/4) Held-out queries and demonstration pool | #1 | Ready to start for the baseline | 2, 10 |
 | [#5](https://github.com/dsikar/fesa-llm-experiments/issues/5) Immutable evidence and safe export | None | Ready to start; coordinate with #7 | 2, 10 |
 | [#7](https://github.com/dsikar/fesa-llm-experiments/issues/7) Results contract and generated table | None | Changes required; open and unmerged | 8, 9, 10 |
