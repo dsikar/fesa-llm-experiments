@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dsikar/fesa-llm-experiments/schemas/evidence-run-v1.schema.json",
+  "title": "Evidence run layout v1",
+  "description": "Interface for issue #5. #5 stores these records immutably and handles resume. #7 validates them and exports the public allowlist. This writer does not run inference.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "schema_id",
+    "evidence_class",
+    "run_id",
+    "design_issue",
+    "issue_5_interface",
+    "layout"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "schema_id": {
+      "const": "evidence-run-v1"
+    },
+    "evidence_class": {
+      "enum": [
+        "synthetic",
+        "observed"
+      ]
+    },
+    "evidence_banner": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "design_issue": {
+      "const": 7
+    },
+    "issue_5_interface": {
+      "const": "validate_then_store"
+    },
+    "model_requests_made": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_file",
+        "conditions_file",
+        "predictions_file",
+        "audit_dir"
+      ],
+      "properties": {
+        "run_file": {
+          "const": "run.json"
+        },
+        "conditions_file": {
+          "const": "conditions.jsonl"
+        },
+        "predictions_file": {
+          "const": "predictions.jsonl"
+        },
+        "audit_dir": {
+          "const": "capacity/audits/<audit_id>/groups.json"
+        }
+      }
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "$ref": "capacity-condition-private-v1.schema.json"
+      }
+    },
+    "predictions": {
+      "type": "array",
+      "items": {
+        "$ref": "capacity-prediction-private-v1.schema.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,1464 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dsikar/fesa-llm-experiments/schemas/capacity-aggregate-v1.schema.json",
+  "title": "Capacity aggregate v1",
+  "description": "Public allowlist for one capacity publication. Arithmetic, null reasons, accounting identities and paired-eligibility gates are enforced by scripts/capacity_contract.py. Synthetic fixtures are not observed results. results/public/capacity-results.json is reserved for a later reviewed aggregate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "schema_id",
+    "artifact_type",
+    "evidence_banner",
+    "evidence_class",
+    "synthetic",
+    "not_an_experiment",
+    "experiment",
+    "design_issue",
+    "design_doc",
+    "design_request",
+    "accounting_policy",
+    "freeze_id",
+    "code_revision",
+    "analysis_revision",
+    "reviewed_aggregate_revision",
+    "amendment_ids",
+    "model_requests_made",
+    "pairing_evidence",
+    "generator",
+    "disclaimer",
+    "unavailable_reasons",
+    "conditions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "schema_id": {
+      "const": "capacity-aggregate-v1"
+    },
+    "artifact_type": {
+      "enum": [
+        "synthetic_fixture",
+        "reviewed_aggregate"
+      ]
+    },
+    "evidence_banner": {
+      "enum": [
+        "SYNTHETIC FIXTURE",
+        "REVIEWED AGGREGATE"
+      ]
+    },
+    "evidence_class": {
+      "enum": [
+        "synthetic",
+        "observed"
+      ]
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "not_an_experiment": {
+      "type": "boolean"
+    },
+    "experiment": {
+      "const": "capacity-attribute-count"
+    },
+    "design_issue": {
+      "const": 7
+    },
+    "design_doc": {
+      "const": "docs/CAPACITY_RESULTS.md"
+    },
+    "design_request": {
+      "const": "docs/requests/06-capacity-output-contract.md"
+    },
+    "accounting_policy": {
+      "const": "capacity-accounting-v1"
+    },
+    "freeze_id": {
+      "const": "capacity-output-contract-v1"
+    },
+    "code_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "analysis_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewed_aggregate_revision": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ]
+    },
+    "amendment_ids": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "const": "accounting-buckets-v1"
+        },
+        {
+          "const": "status-incomplete-v1"
+        },
+        {
+          "const": "pairing-not-proven-v1"
+        },
+        {
+          "const": "observation-source-v1"
+        }
+      ],
+      "minItems": 4,
+      "maxItems": 4,
+      "description": "Contract amendments this row implements."
+    },
+    "model_requests_made": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "pairing_evidence": {
+      "const": "private_predictions_required"
+    },
+    "generator": {
+      "const": "scripts/capacity_contract.py"
+    },
+    "disclaimer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "unavailable_reasons": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "conditions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://github.com/dsikar/fesa-llm-experiments/schemas/capacity-condition-public-v1.schema.json",
+        "title": "Capacity public condition v1",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schema_version",
+          "schema_id",
+          "run_id",
+          "condition_id",
+          "dataset_id",
+          "dataset_type",
+          "dataset_version",
+          "split_id",
+          "feature_set_id",
+          "feature_policy",
+          "model_id",
+          "model_revision",
+          "tokenizer_revision",
+          "code_revision",
+          "template_version",
+          "config_revision",
+          "result_arm",
+          "observation_source",
+          "n_source_columns",
+          "label_columns_excluded",
+          "n_non_label_attributes",
+          "n_attributes_input",
+          "input_attribute_names",
+          "excluded_attribute_names",
+          "exclusion_reasons",
+          "encoding_policy",
+          "missing_value_policy",
+          "identity_or_verdict_features_present",
+          "label_mapping",
+          "demonstration_count",
+          "label_order",
+          "demonstration_order_policy",
+          "selection_seed",
+          "replicate",
+          "schedule_id",
+          "sampling_policy",
+          "population_scope",
+          "n_queries_planned",
+          "n_benign_planned",
+          "n_malicious_planned",
+          "status",
+          "status_reason",
+          "accounting_policy",
+          "accounting_closed",
+          "n_attempted",
+          "n_responses",
+          "n_valid_predictions",
+          "n_failures",
+          "n_parse_failures",
+          "n_context_overflows",
+          "n_context_overflows_preflight",
+          "n_context_overflows_sent",
+          "n_truncated",
+          "n_other_failures",
+          "n_not_attempted",
+          "n_open",
+          "n_benign_evaluated",
+          "n_malicious_evaluated",
+          "tn",
+          "fp",
+          "fn",
+          "tp",
+          "n_predicted_benign",
+          "n_predicted_malicious",
+          "accuracy",
+          "accuracy_ci95_low",
+          "accuracy_ci95_high",
+          "balanced_accuracy",
+          "malicious_precision",
+          "malicious_recall",
+          "benign_recall",
+          "malicious_f1",
+          "false_positive_rate",
+          "completion_rate",
+          "metric_denominator",
+          "undefined_metric_reasons",
+          "unavailable_reasons",
+          "n_rows_audited",
+          "n_unique_vectors",
+          "n_duplicate_groups",
+          "n_duplicate_rows_excess",
+          "n_rows_in_duplicate_groups",
+          "n_conflicting_groups",
+          "n_rows_in_conflicting_groups",
+          "n_unavoidable_errors",
+          "empirical_accuracy_ceiling",
+          "ceiling_population_scope",
+          "audit_matching",
+          "cross_split_overlap_groups",
+          "cross_split_overlap_rows",
+          "context_limit_tokens",
+          "max_output_tokens",
+          "input_tokens_min",
+          "input_tokens_median",
+          "input_tokens_max",
+          "output_tokens_total",
+          "latency_seconds_total",
+          "n_requests_budgeted",
+          "n_requests_made",
+          "context_fit_status",
+          "truncation_policy",
+          "design_issue",
+          "analysis_revision",
+          "freeze_id",
+          "reviewed_aggregate_revision",
+          "timestamps",
+          "amendment_ids",
+          "paired_analysis_eligible",
+          "pairing_established_by_aggregate"
+        ],
+        "properties": {
+          "schema_version": {
+            "type": "integer",
+            "const": 1,
+            "description": "Condition schema version. Always 1 for this freeze."
+          },
+          "schema_id": {
+            "type": "string",
+            "const": "capacity-condition-v1",
+            "description": "Condition schema id, capacity-condition-v1."
+          },
+          "run_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Run identifier. Synthetic ids start with synthetic-."
+          },
+          "condition_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Unique condition identifier. One results-table row."
+          },
+          "dataset_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Dataset identifier. Known FeSAD ids carry registered maxima."
+          },
+          "dataset_type": {
+            "type": "string",
+            "enum": [
+              "phishing",
+              "malware"
+            ],
+            "description": "phishing or malware."
+          },
+          "dataset_version": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Dataset, variant and version label. Required so arms stay distinct."
+          },
+          "split_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Split identifier. Required so arms stay distinct."
+          },
+          "feature_set_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Exact feature-set identifier, not a count alone."
+          },
+          "feature_policy": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Feature-policy id."
+          },
+          "model_id": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Public model id. Null only while planned."
+          },
+          "model_revision": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Model revision. Null only while planned."
+          },
+          "tokenizer_revision": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Tokenizer revision. Null only while planned."
+          },
+          "code_revision": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Code revision that produced the row. Synthetic rows use a sentinel."
+          },
+          "template_version": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Prompt template version. Null only while planned."
+          },
+          "config_revision": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Config revision. Null only while planned."
+          },
+          "result_arm": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "audited_generalization",
+              "diagnostic"
+            ],
+            "description": "pending, audited_generalization, or diagnostic."
+          },
+          "observation_source": {
+            "type": "string",
+            "enum": [
+              "synthetic_fixture",
+              "observed",
+              "not_run"
+            ],
+            "description": "synthetic_fixture, observed, or not_run."
+          },
+          "n_source_columns": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Columns in the source table, including label columns."
+          },
+          "label_columns_excluded": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Label and target-metadata columns forbidden as inputs."
+          },
+          "n_non_label_attributes": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Raw maximum of non-label attributes. Distinct from the supplied count."
+          },
+          "n_attributes_input": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Attributes actually supplied to the model. Zero would mean a measured empty input."
+          },
+          "input_attribute_names": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            ],
+            "description": "Ordered model-visible attribute names. Length equals n_attributes_input."
+          },
+          "excluded_attribute_names": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            ],
+            "description": "Non-label attributes withheld from the input."
+          },
+          "exclusion_reasons": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Map of excluded non-label attribute name to reason."
+          },
+          "encoding_policy": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Encoding and canonicalization policy."
+          },
+          "missing_value_policy": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Missing-value policy."
+          },
+          "identity_or_verdict_features_present": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "boolean"
+              }
+            ],
+            "description": "True when the arm retains identifier or detector-verdict features."
+          },
+          "label_mapping": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "benign",
+                  "malicious"
+                ],
+                "properties": {
+                  "benign": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "malicious": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            ],
+            "description": "Map of benign and malicious to the source label strings."
+          },
+          "demonstration_count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Balanced demonstration count for this arm."
+          },
+          "label_order": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B"
+            ],
+            "description": "A lists malicious first. B lists benign first."
+          },
+          "demonstration_order_policy": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "How demonstrations are ordered inside the prompt."
+          },
+          "selection_seed": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Seed used to select queries and demonstrations."
+          },
+          "replicate": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Replicate number, starting at 1."
+          },
+          "schedule_id": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Execution-schedule id. Not a cluster job id."
+          },
+          "sampling_policy": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Sampling policy for the query population."
+          },
+          "population_scope": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Query population this condition scores."
+          },
+          "n_queries_planned": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Planned queries in this cell."
+          },
+          "n_benign_planned": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Planned queries with benign gold labels."
+          },
+          "n_malicious_planned": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Planned queries with malicious gold labels."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "planned",
+              "blocked",
+              "incomplete",
+              "failed",
+              "complete"
+            ],
+            "description": "planned, blocked, incomplete, failed, or complete."
+          },
+          "status_reason": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Why the condition has this status."
+          },
+          "accounting_policy": {
+            "type": "string",
+            "const": "capacity-accounting-v1",
+            "description": "capacity-accounting-v1."
+          },
+          "accounting_closed": {
+            "type": "boolean",
+            "description": "True when every planned query has one terminal disposition."
+          },
+          "n_attempted": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Planned queries with at least one request. Retries do not add queries."
+          },
+          "n_responses": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Queries that returned a response body."
+          },
+          "n_valid_predictions": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Queries scored with a parsed label."
+          },
+          "n_failures": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Terminal failures: parse, context, truncation and other. Excludes retries and not-attempted queries."
+          },
+          "n_parse_failures": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Queries whose terminal disposition is parse_failure."
+          },
+          "n_context_overflows": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Queries whose terminal disposition is context_overflow."
+          },
+          "n_context_overflows_preflight": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Context overflows blocked before a request was sent."
+          },
+          "n_context_overflows_sent": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Context overflows discovered after a request was sent."
+          },
+          "n_truncated": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Truncated responses. They are not scored."
+          },
+          "n_other_failures": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Terminal transport or server failures after retries were exhausted."
+          },
+          "n_not_attempted": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Queries with a terminal not_attempted disposition."
+          },
+          "n_open": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Queries without a terminal disposition. Zero when accounting is closed."
+          },
+          "n_benign_evaluated": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Valid predictions with a benign gold label."
+          },
+          "n_malicious_evaluated": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Valid predictions with a malicious gold label."
+          },
+          "tn": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Benign gold predicted benign."
+          },
+          "fp": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Benign gold predicted malicious."
+          },
+          "fn": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Malicious gold predicted benign."
+          },
+          "tp": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Malicious gold predicted malicious."
+          },
+          "n_predicted_benign": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Valid predictions labelled benign. Equals tn+fn."
+          },
+          "n_predicted_malicious": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Valid predictions labelled malicious. Equals fp+tp."
+          },
+          "accuracy": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ],
+            "description": "Accuracy on valid predictions."
+          },
+          "accuracy_ci95_low": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ],
+            "description": "Lower Wilson 95% bound for accuracy."
+          },
+          "accuracy_ci95_high": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ],
+            "description": "Upper Wilson 95% bound for accuracy."
+          },
+          "balanced_accuracy": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ],
+            "description": "Mean of benign and malicious recall."
+          },
+          "malicious_precision": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ],
+            "description": "Precision of the malicious prediction."
+          },
+          "malicious_recall": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ],
+            "description": "Recall of the malicious class."
+          },
+          "benign_recall": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ],
+            "description": "Recall of the benign class."
+          },
+          "malicious_f1": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ],
+            "description": "Harmonic mean of malicious precision and recall."
+          },
+          "false_positive_rate": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ],
+            "description": "False positive rate. Equals 1-benign recall when both are defined."
+          },
+          "completion_rate": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ],
+            "description": "n_valid_predictions / n_queries_planned."
+          },
+          "metric_denominator": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Denominator for accuracy: n_valid_predictions."
+          },
+          "undefined_metric_reasons": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Reason for each null classification or completion metric."
+          },
+          "unavailable_reasons": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Reason for each other null field."
+          },
+          "n_rows_audited": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Rows in the audited population. Not the query count."
+          },
+          "n_unique_vectors": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Distinct projected vectors, including singletons."
+          },
+          "n_duplicate_groups": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Vectors that occur more than once."
+          },
+          "n_duplicate_rows_excess": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "sum(size-1) over duplicate groups."
+          },
+          "n_rows_in_duplicate_groups": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "sum(size) over duplicate groups."
+          },
+          "n_conflicting_groups": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Duplicate vectors that carry both labels."
+          },
+          "n_rows_in_conflicting_groups": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Rows belonging to conflicting groups."
+          },
+          "n_unavoidable_errors": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "sum of min(n_g0, n_g1) over vectors."
+          },
+          "empirical_accuracy_ceiling": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ],
+            "description": "1 - unavoidable_errors / n_rows_audited for the named population."
+          },
+          "ceiling_population_scope": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Population the ceiling describes. Not a general capacity bound."
+          },
+          "audit_matching": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "exact",
+                  "approximate"
+                ]
+              }
+            ],
+            "description": "exact or approximate. Approximate audits stay labelled."
+          },
+          "cross_split_overlap_groups": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Vector groups that appear in more than one split."
+          },
+          "cross_split_overlap_rows": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Rows in cross-split overlap groups."
+          },
+          "context_limit_tokens": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Serving context limit used for the preflight."
+          },
+          "max_output_tokens": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Maximum completion tokens."
+          },
+          "input_tokens_min": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Minimum input tokens over attempted queries with token observations."
+          },
+          "input_tokens_median": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0
+              }
+            ],
+            "description": "Median input tokens. Even counts use the mean of the two central values."
+          },
+          "input_tokens_max": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Maximum input tokens over attempted queries with token observations."
+          },
+          "output_tokens_total": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Sum of output tokens over received responses."
+          },
+          "latency_seconds_total": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0
+              }
+            ],
+            "description": "Sum of per-query latency. Retries are included in the query total, not as extra queries."
+          },
+          "n_requests_budgeted": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Request budget for this condition, including allowed retries."
+          },
+          "n_requests_made": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "description": "Requests issued, including retries. Simulated fixtures still set model_requests_made to 0 at the top level."
+          },
+          "context_fit_status": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "fit",
+                  "overflow",
+                  "not_checked"
+                ]
+              }
+            ],
+            "description": "fit, overflow, or not_checked."
+          },
+          "truncation_policy": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "reject_truncated",
+                  "not_applicable"
+                ]
+              }
+            ],
+            "description": "reject_truncated or not_applicable. Truncated outputs are not scored."
+          },
+          "design_issue": {
+            "type": "integer",
+            "const": 7,
+            "description": "GitHub issue that froze this output contract."
+          },
+          "analysis_revision": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Analysis revision id."
+          },
+          "freeze_id": {
+            "type": "string",
+            "const": "capacity-output-contract-v1",
+            "description": "Output-contract freeze id."
+          },
+          "reviewed_aggregate_revision": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ],
+            "description": "Revision of a reviewed publication. Null for synthetic fixtures."
+          },
+          "timestamps": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "registered_at",
+              "closed_at"
+            ],
+            "properties": {
+              "registered_at": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+              },
+              "closed_at": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+                  }
+                ]
+              }
+            },
+            "description": "Registration and close times in UTC, second resolution."
+          },
+          "amendment_ids": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "const": "accounting-buckets-v1"
+              },
+              {
+                "const": "status-incomplete-v1"
+              },
+              {
+                "const": "pairing-not-proven-v1"
+              },
+              {
+                "const": "observation-source-v1"
+              }
+            ],
+            "minItems": 4,
+            "maxItems": 4,
+            "description": "Contract amendments this row implements."
+          },
+          "paired_analysis_eligible": {
+            "type": "boolean",
+            "description": "Numeric gate for a future paired test. Not proof of pairing."
+          },
+          "pairing_established_by_aggregate": {
+            "type": "boolean",
+            "const": false,
+            "description": "Always false. Pairing evidence stays in private predictions."
+          }
+        }
+      }
+    }
+  }
+}

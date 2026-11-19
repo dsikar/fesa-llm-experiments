@@ -16,7 +16,7 @@ The issues describe planned work. The completed pilot is documented separately i
 
 ## Attribute-count extension
 
-Front-loaded [target table and JSON contract](CAPACITY_RESULTS.md); [machine-readable planned arms](../results/public/capacity-plan.json). No new model requests. GitHub #6 was already used by the merged prompt PR, so these tickets start at #7.
+Front-loaded [target table and JSON contract](CAPACITY_RESULTS.md); [machine-readable planned arms](../results/public/capacity-plan.json). The #7 schema, validator, renderer and synthetic tests are implemented. Issue #7 stays open for review. No new model requests. GitHub #6 was already used by the merged prompt PR, so these tickets start at #7.
 
 | Issue | Specification | Depends on |
 |---|---|---|
