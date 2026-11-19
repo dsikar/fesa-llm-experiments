@@ -2,6 +2,8 @@
 
 Status: proposed; execution is tracked in the five linked issues. No v3 responses have been collected.
 
+Step 1 implementation: [domain prompts](PROMPTS.md), [sourced feature audit](FEATURE_POLICY.md), [frozen configuration](../configs/primary.toml), [public source hashes](../configs/prompt-v1.sha256) and [offline validation](ISSUE_1_DELIVERY.md). The primary set uses 8 phishing and 12 malware fields; it differs from the historical pilot's feature set.
+
 ## Question
 
 With a fixed, domain-correct prompt, does increasing the number of balanced labelled demonstrations improve classification? Does the effect depend on the order in which benign and malicious labels are described?

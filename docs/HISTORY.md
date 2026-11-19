@@ -7,6 +7,7 @@
 | 2026-11-19 | Eight pilot conditions completed, 800 responses, no request or parsing failures | [Aggregate results](../results/public/pilot-v2.json) |
 | 2026-11-19 | Qwen review accepted the fixes and independently recomputed the private row-based analysis | [Review scope](PILOT_V2.md#audit-trail) |
 | 2026-11-19 | Public repository prepared; next experiment split into five issues | [Issue index](ISSUES.md) |
+| 2026-11-19 | Issue 1: domain prompts and conservative feature policy implemented; 28 offline tests pass | [Delivery and limits](ISSUE_1_DELIVERY.md) |
 
 Original raw evidence remains in the private experiment workspace. These historical results precede this repository's initial commit. The Git history records the public export and subsequent work; it is not a retrospective preregistration of the pilot.
 

@@ -1,0 +1,1000 @@
+schema_version = 1
+policy_version = "primary-v1"
+
+[sources.P1]
+url = "https://doi.org/10.1016/j.ins.2019.01.064"
+section = "Appendix A, Table A1"
+
+[sources.P2]
+url = "https://data.mendeley.com/datasets/h3cgnj8hft/1"
+section = "Author dataset record; candidate feature-family provenance, not proof of the derived split lineage"
+
+[sources.M1]
+url = "https://zenodo.org/records/13890887"
+section = "Author dataset record"
+
+[sources.M2]
+url = "https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"
+section = "PE optional header and section table"
+
+[[features]]
+dataset = "phishing"
+name = "NumDots"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "URL dot-character count."
+source = "P1:A1:1"
+evidence = "Publisher feature table; raw integer contract validated locally."
+reason = "Direct URL measurement; no verdict or identifier string is supplied."
+
+[[features]]
+dataset = "phishing"
+name = "NumDash"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "URL hyphen-character count."
+source = "P1:A1:5"
+evidence = "Publisher feature table; raw integer contract validated locally."
+reason = "Direct URL measurement; no verdict or identifier string is supplied."
+
+[[features]]
+dataset = "phishing"
+name = "NumUnderscore"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "URL underscore-character count."
+source = "P1:A1:9"
+evidence = "Publisher feature table; raw integer contract validated locally."
+reason = "Direct URL measurement; no verdict or identifier string is supplied."
+
+[[features]]
+dataset = "phishing"
+name = "NumQueryComponents"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "Recorded number of URL query parts."
+source = "P1:A1:11"
+evidence = "Publisher feature table; raw integer contract validated locally."
+reason = "Direct URL measurement; no verdict or identifier string is supplied."
+
+[[features]]
+dataset = "phishing"
+name = "NumHash"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "URL number-sign character count."
+source = "P1:A1:13"
+evidence = "Publisher feature table; raw integer contract validated locally."
+reason = "Direct URL measurement; no verdict or identifier string is supplied."
+
+[[features]]
+dataset = "phishing"
+name = "NumNumericChars"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "Recorded count of numeric characters in the URL."
+source = "P1:A1:14"
+evidence = "Publisher feature table; raw integer contract validated locally."
+reason = "Direct URL measurement; no verdict or identifier string is supplied."
+
+[[features]]
+dataset = "phishing"
+name = "IpAddress"
+status = "exclude"
+kind = "binary"
+definition = "Indicator concerning an IP address in the hostname."
+source = "P1:A1:17"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "Binary polarity in the derived file was not independently verified."
+
+[[features]]
+dataset = "phishing"
+name = "HostnameLength"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "Character count of the URL hostname component."
+source = "P1:A1:21"
+evidence = "Publisher feature table; raw integer contract validated locally."
+reason = "Direct URL measurement; no verdict or identifier string is supplied."
+
+[[features]]
+dataset = "phishing"
+name = "PathLength"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "Character count of the URL path component."
+source = "P1:A1:22"
+evidence = "Publisher feature table; raw integer contract validated locally."
+reason = "Direct URL measurement; no verdict or identifier string is supplied."
+
+[[features]]
+dataset = "phishing"
+name = "NumSensitiveWords"
+status = "exclude"
+kind = "count"
+definition = "URL keyword-match count."
+source = "P1:A1:25"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "Exact keyword matching, case handling and extraction lineage are unresolved."
+
+[[features]]
+dataset = "phishing"
+name = "PctExtHyperlinks"
+status = "exclude"
+kind = "continuous"
+definition = "External-link measure from webpage content."
+source = "P1:A1:27"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "Percentage versus stored fraction and extractor denominator are not frozen."
+
+[[features]]
+dataset = "phishing"
+name = "PctExtResourceUrls"
+status = "exclude"
+kind = "continuous"
+definition = "External-resource measure from webpage content."
+source = "P1:A1:28"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "Percentage versus stored fraction and extractor denominator are not frozen."
+
+[[features]]
+dataset = "phishing"
+name = "InsecureForms"
+status = "exclude"
+kind = "binary"
+definition = "Indicator concerning form actions without HTTPS."
+source = "P1:A1:30"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "Binary polarity in the derived file was not independently verified."
+
+[[features]]
+dataset = "phishing"
+name = "PctNullSelfRedirectHyperlinks"
+status = "exclude"
+kind = "continuous"
+definition = "Null/self-redirect/abnormal hyperlink measure."
+source = "P1:A1:34"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "Stored units, denominator and exact abnormal-link handling are unresolved."
+
+[[features]]
+dataset = "phishing"
+name = "FrequentDomainNameMismatch"
+status = "exclude"
+kind = "binary"
+definition = "Indicator concerning content-domain versus URL-domain mismatch."
+source = "P1:A1:35"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "Binary polarity and domain counting/tie handling are unresolved."
+
+[[features]]
+dataset = "phishing"
+name = "SubmitInfoToEmail"
+status = "exclude"
+kind = "binary"
+definition = "Indicator concerning mailto use in webpage content."
+source = "P1:A1:39"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "Binary polarity in the derived file was not independently verified."
+
+[[features]]
+dataset = "phishing"
+name = "IframeOrFrame"
+status = "exclude"
+kind = "binary"
+definition = "Indicator concerning frame elements in webpage content."
+source = "P1:A1:40"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "Binary polarity in the derived file was not independently verified."
+
+[[features]]
+dataset = "phishing"
+name = "MissingTitle"
+status = "exclude"
+kind = "binary"
+definition = "Indicator concerning an empty webpage title."
+source = "P1:A1:41"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "Binary polarity in the derived file was not independently verified."
+
+[[features]]
+dataset = "phishing"
+name = "AbnormalExtFormActionR"
+status = "exclude"
+kind = "categorical"
+definition = "Rule-derived form-action code."
+source = "P1:A1:46"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "The rule-code mapping and thresholds are unresolved; no risk ordering is assumed."
+
+[[features]]
+dataset = "phishing"
+name = "PctExtNullSelfRedirectHyperlinksRT"
+status = "exclude"
+kind = "categorical"
+definition = "Rule-derived external/null/self-redirect link code."
+source = "P1:A1:48"
+evidence = "Feature semantics described in the publisher table; derived encoding unresolved."
+reason = "The rule-code mapping and thresholds are unresolved; no risk ordering is assumed."
+
+[[features]]
+dataset = "malware"
+name = "md5"
+status = "exclude"
+kind = "identifier"
+definition = "File-content identifier."
+source = "M1"
+evidence = "Source column role."
+reason = "Exclude identity lookup and sample memorization cues."
+
+[[features]]
+dataset = "malware"
+name = "sha1"
+status = "exclude"
+kind = "identifier"
+definition = "File-content identifier."
+source = "M1"
+evidence = "Source column role."
+reason = "Exclude identity lookup and sample memorization cues."
+
+[[features]]
+dataset = "malware"
+name = "file_extension"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "EntryPoint"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "PEType"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "MachineType"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "magic_number"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "bytes_on_last_page"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "pages_in_file"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "relocations"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "size_of_header"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "min_extra_paragraphs"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "max_extra_paragraphs"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "init_ss_value"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "init_sp_value"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "init_ip_value"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "init_cs_value"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "over_lay_number"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "oem_identifier"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "address_of_ne_header"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "Magic"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "SizeOfCode"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "Total code-section size in bytes."
+source = "M2:optional-header-standard-fields-image-only"
+standard_field = "SizeOfCode"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "SizeOfInitializedData"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "Total initialized-data section size in bytes."
+source = "M2:optional-header-standard-fields-image-only"
+standard_field = "SizeOfInitializedData"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "SizeOfUninitializedData"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "Total uninitialized-data section size in bytes."
+source = "M2:optional-header-standard-fields-image-only"
+standard_field = "SizeOfUninitializedData"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "AddressOfEntryPoint"
+status = "exclude"
+kind = "uint"
+bits = 32
+definition = "Entry-point offset relative to the preferred image base, in bytes."
+source = "M2:optional-header-standard-fields-image-only"
+standard_field = "AddressOfEntryPoint"
+evidence = "Standard RVA semantics known; four development records fail the unsigned-number representation contract."
+reason = "Unsupported hex-like strings occur; no source-backed conversion is defined. Exclude the field, not the rows."
+
+[[features]]
+dataset = "malware"
+name = "BaseOfCode"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "BaseOfData"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "ImageBase"
+status = "include"
+kind = "uint"
+bits = 64
+definition = "Preferred load base address."
+source = "M2:optional-header-windows-specific-fields-image-only"
+standard_field = "ImageBase"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "SectionAlignment"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "Alignment of loaded sections, in bytes."
+source = "M2:optional-header-windows-specific-fields-image-only"
+standard_field = "SectionAlignment"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "FileAlignment"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "Alignment of section data on disk, in bytes."
+source = "M2:optional-header-windows-specific-fields-image-only"
+standard_field = "FileAlignment"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "OperatingSystemVersion"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "ImageVersion"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "SizeOfImage"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "Loaded image extent including headers, in bytes."
+source = "M2:optional-header-windows-specific-fields-image-only"
+standard_field = "SizeOfImage"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "SizeOfHeaders"
+status = "include"
+kind = "uint"
+bits = 32
+definition = "Aligned combined executable-header size, in bytes."
+source = "M2:optional-header-windows-specific-fields-image-only"
+standard_field = "SizeOfHeaders"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "Checksum"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "Subsystem"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "DllCharacteristics"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "SizeofStackReserve"
+status = "include"
+kind = "uint"
+bits = 64
+definition = "Reserved stack capacity in bytes."
+source = "M2:optional-header-windows-specific-fields-image-only"
+standard_field = "SizeOfStackReserve"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "SizeofStackCommit"
+status = "include"
+kind = "uint"
+bits = 64
+definition = "Initially committed stack capacity in bytes."
+source = "M2:optional-header-windows-specific-fields-image-only"
+standard_field = "SizeOfStackCommit"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "SizeofHeapCommit"
+status = "include"
+kind = "uint"
+bits = 64
+definition = "Initially committed heap capacity in bytes."
+source = "M2:optional-header-windows-specific-fields-image-only"
+standard_field = "SizeOfHeapCommit"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "SizeofHeapReserve"
+status = "include"
+kind = "uint"
+bits = 64
+definition = "Reserved heap capacity in bytes."
+source = "M2:optional-header-windows-specific-fields-image-only"
+standard_field = "SizeOfHeapReserve"
+evidence = "PE specification; source dataset identity confirmed against its public release checksum."
+reason = "Static PE value available from file inspection without a security-tool verdict."
+
+[[features]]
+dataset = "malware"
+name = "LoaderFlags"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "text_VirtualSize"
+status = "exclude"
+kind = "uint"
+bits = 32
+definition = "Loaded .text section extent in bytes."
+source = "M2:section-table-section-headers"
+standard_field = "VirtualSize"
+evidence = "PE standard semantics known; dataset section-selection mapping is unverified."
+reason = "Section selection, repeated/missing-section handling and conversion are unresolved."
+
+[[features]]
+dataset = "malware"
+name = "text_VirtualAddress"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "text_SizeOfRawData"
+status = "exclude"
+kind = "uint"
+bits = 32
+definition = "Initialized .text section data on disk, in bytes."
+source = "M2:section-table-section-headers"
+standard_field = "SizeOfRawData"
+evidence = "PE standard semantics known; dataset section-selection mapping is unverified."
+reason = "Section selection, repeated/missing-section handling and conversion are unresolved."
+
+[[features]]
+dataset = "malware"
+name = "text_PointerToRawData"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "text_PointerToRelocations"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "text_PointerToLineNumbers"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "text_Characteristics"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "rdata_VirtualSize"
+status = "exclude"
+kind = "uint"
+bits = 32
+definition = "Loaded .rdata section extent in bytes."
+source = "M2:section-table-section-headers"
+standard_field = "VirtualSize"
+evidence = "PE standard semantics known; dataset section-selection mapping is unverified."
+reason = "Section selection, repeated/missing-section handling and conversion are unresolved."
+
+[[features]]
+dataset = "malware"
+name = "rdata_VirtualAddress"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "rdata_SizeOfRawData"
+status = "exclude"
+kind = "uint"
+bits = 32
+definition = "Initialized .rdata section data on disk, in bytes."
+source = "M2:section-table-section-headers"
+standard_field = "SizeOfRawData"
+evidence = "PE standard semantics known; dataset section-selection mapping is unverified."
+reason = "Section selection, repeated/missing-section handling and conversion are unresolved."
+
+[[features]]
+dataset = "malware"
+name = "rdata_PointerToRawData"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "rdata_PointerToRelocations"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "rdata_PointerToLineNumbers"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "rdata_Characteristics"
+status = "exclude"
+kind = "unverified-mapping"
+definition = "PE/DOS, symbolic or metadata column outside the frozen numeric subset."
+source = "M1"
+evidence = "Source name is known; this dataset-specific mapping is not verified for primary use."
+reason = "Symbolic/legacy/duplicate field or unresolved conversion; not inferred from its name."
+
+[[features]]
+dataset = "malware"
+name = "registry_read"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "registry_write"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "registry_delete"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "registry_total"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "network_threats"
+status = "exclude"
+kind = "verdict-derived"
+definition = "Field named for a security judgment or suspicious/threat count."
+source = "M1"
+evidence = "Schema-level risk finding; generating-tool semantics were not recovered."
+reason = "Potential proxy for a pre-existing security verdict; timing and label independence unresolved."
+
+[[features]]
+dataset = "malware"
+name = "network_dns"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "network_http"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "network_connections"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "processes_malicious"
+status = "exclude"
+kind = "verdict-derived"
+definition = "Field named for a security judgment or suspicious/threat count."
+source = "M1"
+evidence = "Schema-level risk finding; generating-tool semantics were not recovered."
+reason = "Potential proxy for a pre-existing security verdict; timing and label independence unresolved."
+
+[[features]]
+dataset = "malware"
+name = "processes_suspicious"
+status = "exclude"
+kind = "verdict-derived"
+definition = "Field named for a security judgment or suspicious/threat count."
+source = "M1"
+evidence = "Schema-level risk finding; generating-tool semantics were not recovered."
+reason = "Potential proxy for a pre-existing security verdict; timing and label independence unresolved."
+
+[[features]]
+dataset = "malware"
+name = "processes_monitored"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "total_procsses"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "files_malicious"
+status = "exclude"
+kind = "verdict-derived"
+definition = "Field named for a security judgment or suspicious/threat count."
+source = "M1"
+evidence = "Schema-level risk finding; generating-tool semantics were not recovered."
+reason = "Potential proxy for a pre-existing security verdict; timing and label independence unresolved."
+
+[[features]]
+dataset = "malware"
+name = "files_suspicious"
+status = "exclude"
+kind = "verdict-derived"
+definition = "Field named for a security judgment or suspicious/threat count."
+source = "M1"
+evidence = "Schema-level risk finding; generating-tool semantics were not recovered."
+reason = "Potential proxy for a pre-existing security verdict; timing and label independence unresolved."
+
+[[features]]
+dataset = "malware"
+name = "files_text"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "files_unknown"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "dlls_calls"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."
+
+[[features]]
+dataset = "malware"
+name = "apis"
+status = "exclude"
+kind = "unverified-counter"
+definition = "Recorded counter; exact generating procedure is unverified."
+source = "M1"
+evidence = "Schema only; no authoritative field-level extraction dictionary recovered."
+reason = "Cannot establish units, execution conditions or prediction-time availability."

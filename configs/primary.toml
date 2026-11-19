@@ -1,0 +1,18 @@
+schema_version = 1
+policy_version = "primary-v1"
+template_version = "domain-v1"
+dictionary = "configs/features.toml"
+demonstration_counts = [0, 4, 10]
+forbidden_feature_keys = ["label", "label_true", "label_pred", "Class", "Category", "Family", "CLASS_LABEL", "target"]
+
+[datasets.phishing]
+template = "prompts/phishing-v1.txt"
+label_order_a = "phishing (1) or benign (0)"
+label_order_b = "benign (0) or phishing (1)"
+included = ["NumDots", "NumDash", "NumUnderscore", "NumQueryComponents", "NumHash", "NumNumericChars", "HostnameLength", "PathLength"]
+
+[datasets.malware]
+template = "prompts/malware-v1.txt"
+label_order_a = "malicious (1) or benign (0)"
+label_order_b = "benign (0) or malicious (1)"
+included = ["SizeOfCode", "SizeOfInitializedData", "SizeOfUninitializedData", "ImageBase", "SectionAlignment", "FileAlignment", "SizeOfImage", "SizeOfHeaders", "SizeofStackReserve", "SizeofStackCommit", "SizeofHeapCommit", "SizeofHeapReserve"]
