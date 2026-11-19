@@ -36,6 +36,7 @@ results/*
 !results/public/
 results/public/*
 !results/public/pilot-v2.json
+!results/public/capacity-plan.json
 
 # Python and editor files
 __pycache__/

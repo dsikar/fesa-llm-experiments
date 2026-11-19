@@ -9,6 +9,8 @@
 | 2026-11-19 | Public repository prepared; next experiment split into five issues | [Issue index](ISSUES.md) |
 | 2026-11-19 | Issue 1: domain prompts and conservative feature policy implemented; 28 offline tests pass | [Delivery and limits](ISSUE_1_DELIVERY.md) |
 
+| 2026-11-19 | Attribute-count extension planned in issues #7–#10; six dataset variants inventoried, private copies preserved, table/JSON contract specified; zero new requests | [Output contract](CAPACITY_RESULTS.md) |
+
 Original raw evidence remains in the private experiment workspace. These historical results precede this repository's initial commit. The Git history records the public export and subsequent work; it is not a retrospective preregistration of the pilot.
 
 The [pilot-v2-public-baseline tag](https://github.com/dsikar/fesa-llm-experiments/tree/pilot-v2-public-baseline) fixes the initial public export. Future implementations should reference their issue in commits and link the frozen design, reviewed aggregate results and analysis revision in the issue before closure.

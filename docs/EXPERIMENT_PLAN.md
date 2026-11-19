@@ -39,3 +39,7 @@ Keep model, features, decoding and prompt structure fixed across the count/order
 - Report descriptive pilot results without claims of deployment readiness or broad generalization. Balanced-sample accuracy does not describe natural deployment prevalence.
 
 Final-layer embeddings and geometric analysis remain follow-on work; the classification pilot did not collect them.
+
+## Attribute-count extension
+
+The [table-first attribute-count plan](CAPACITY_RESULTS.md) extends the design to five FeSAD phishing variants and deduplicated Hussain malware, using maximum non-label inputs and explicit duplicate/conflict audits. Tracked in #7–#10 (see [issue index](ISSUES.md)). It has not run and does not change primary-v1 or the proposed #2 matrix without a separately frozen amendment.

@@ -13,3 +13,14 @@ Milestone: [v3: prompt and demonstration-count experiment](https://github.com/ds
 Step 2 requires steps 1, 3, 4 and 5 before model requests. Steps 1, 3 and 4 can be prepared alongside the evidence infrastructure in step 5. Changes to the experimental design must be recorded before collection.
 
 The issues describe planned work. The completed pilot is documented separately in [PILOT_V2.md](PILOT_V2.md).
+
+## Attribute-count extension
+
+Front-loaded [target table and JSON contract](CAPACITY_RESULTS.md); [machine-readable planned arms](../results/public/capacity-plan.json). No new model requests. GitHub #6 was already used by the merged prompt PR, so these tickets start at #7.
+
+| Issue | Specification | Depends on |
+|---|---|---|
+| [#7 — Define the attribute-count results table and JSON evidence contract](https://github.com/dsikar/fesa-llm-experiments/issues/7) | [Versioned request](requests/06-capacity-output-contract.md) | #5 coordination |
+| [#8 — Inventory FeSAD datasets and freeze maximum non-label feature policies](https://github.com/dsikar/fesa-llm-experiments/issues/8) | [Versioned request](requests/07-capacity-dataset-audit.md) | #7; #1/#4/#5 coordination |
+| [#9 — Measure feature-reduction duplicates, conflicting labels and empirical ceilings](https://github.com/dsikar/fesa-llm-experiments/issues/9) | [Versioned request](requests/08-capacity-collisions.md) | #7/#8; #4/#5 coordination |
+| [#10 — Run paired maximum-attribute classification and publish feature-count metrics](https://github.com/dsikar/fesa-llm-experiments/issues/10) | [Versioned request](requests/09-capacity-experiment.md) | #7–#9 and #2–#5 readiness |
