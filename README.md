@@ -19,6 +19,7 @@ The repository contains aggregate results, offline prompt tools and planning mat
 Verify the public results offline:
 
 ```bash
+python3 -m pip install -r requirements-test.txt
 python3 scripts/verify_baseline.py
 python3 scripts/render_baseline.py --check
 python3 -m unittest discover -s tests -v

@@ -323,7 +323,7 @@ class CapacityContract(unittest.TestCase):
             validate_public_condition(wrong_labels)
 
         condition_id = "cap-synthetic-phish-split-heldout-features-retry-d0-a-r1"
-        design = _design(condition_id, "features-retry", "complete", budget=5)
+        design = _design(condition_id, "features-retry", "complete", budget=5, planned_labels=["benign", "malicious"])
         rows = [
             _prediction("synthetic-capacity-demo", condition_id, 0, "benign", "valid", "benign", attempts=3),
             _prediction("synthetic-capacity-demo", condition_id, 1, "malicious", "valid", "malicious", attempts=1),
@@ -346,7 +346,10 @@ class CapacityContract(unittest.TestCase):
         host = "http://" + "gpu" + "99.internal/v1"
         prompt = "SYNTHETIC PROMPT BODY do-not-publish-row-77"
         run["predictions"][0]["raw_prompt"] = prompt
-        run["predictions"][0]["endpoint"] = host
+        run["conditions"][0]["endpoint"] = host
+        for row in run["predictions"]:
+            if row["condition_id"] == run["conditions"][0]["condition_id"]:
+                row["endpoint"] = host
         run["conditions"][0]["secret_path"] = secret_path
         run["conditions"][0]["access_token"] = token
         exported = export_public_aggregate(run)

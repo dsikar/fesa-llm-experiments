@@ -276,8 +276,9 @@ AGGREGATE_FIELDS = (
 )
 PRIVATE_CONDITION_FIELDS = (
     "record_type", "private_artifact_reference", "decoding", "demonstration_ids",
-    "serving_session_id", "endpoint", "prompt_template_sha256",
+    "serving_session_id", "endpoint", "prompt_template_sha256", "planned_queries",
 )
+PLAN_QUERY_FIELDS = ("query_id", "row_identity", "gold_label", "membership_hash")
 PREDICTION_FIELDS = (
     "schema_version", "schema_id", "record_type", "run_id", "condition_id", "query_id",
     "row_identity", "pair_group_id", "gold_label", "terminal_disposition", "attempt_count",
@@ -290,7 +291,7 @@ SENSITIVE_KEYS = {
     "private_artifact_reference", "query_id", "row_identity", "pair_group_id",
     "membership_hash", "prompt_sha256", "response_sha256", "raw_prompt", "raw_response",
     "raw_prompt_ref", "raw_response_ref", "serving_session_id", "endpoint",
-    "demonstration_ids", "decoding", "prompt_template_sha256", "groups",
+    "demonstration_ids", "decoding", "prompt_template_sha256", "groups", "planned_queries",
 }
 RUN_WHEN_FIELDS = (
     "model_id", "model_revision", "tokenizer_revision", "template_version", "config_revision",
@@ -508,6 +509,7 @@ def _check_audit_identity(condition, label):
     require(unique >= 1 and unique + excess == rows, f"{label}: duplicate excess does not partition the audit")
     require(0 <= duplicate_groups <= unique, f"{label}: duplicate group count is inconsistent")
     require(rows_dup == excess + duplicate_groups, f"{label}: rows in duplicate groups do not match excess")
+    require(rows_dup >= 2 * duplicate_groups, f"{label}: duplicate groups need at least two rows each")
     require(rows_dup <= rows, f"{label}: duplicate rows exceed the audit")
     if duplicate_groups == 0:
         require(excess == 0 and rows_dup == 0 and unique == rows, f"{label}: singleton audit still records duplicates")
@@ -516,9 +518,12 @@ def _check_audit_identity(condition, label):
         require(unavoidable == 0 and rows_conflict == 0, f"{label}: conflicts are recorded without conflicting groups")
     else:
         require(rows_conflict >= 2 * conflict_groups, f"{label}: conflicting group is smaller than two rows")
-        require(rows_conflict <= rows_dup, f"{label}: conflicting rows exceed duplicate rows")
-        require(conflict_groups <= unavoidable <= rows_conflict - conflict_groups,
+        require(rows_conflict <= rows_dup - 2 * (duplicate_groups - conflict_groups),
+                f"{label}: conflicting rows leave too few rows for other duplicate groups")
+        require(conflict_groups <= unavoidable and 2 * unavoidable <= rows_conflict,
                 f"{label}: unavoidable errors are outside the conflict bounds")
+    if conflict_groups == duplicate_groups:
+        require(rows_conflict == rows_dup, f"{label}: all duplicate groups conflict but their row counts differ")
     require(condition["audit_matching"] in AUDIT_MATCHING, f"{label}: audit matching is not labelled")
     _nonempty(condition["ceiling_population_scope"], f"{label}: ceiling population")
     close(condition["empirical_accuracy_ceiling"], 1.0 - (float(unavoidable) / float(rows)))
@@ -659,14 +664,19 @@ def _check_accounting(condition, label):
         if all(present):
             _check_plan_counts(condition, label)
         return
-    require(status in {"blocked", "incomplete", "failed", "complete"}, f"{label}: status is not publishable")
-    require(condition["accounting_closed"] is True, f"{label}: closed status with open accounting")
-    require(condition["timestamps"]["closed_at"] is not None, f"{label}: closed condition needs closed_at")
+    running = status == "running"
+    require(status in PRIVATE_STATUSES, f"{label}: status")
+    require(condition["accounting_closed"] is (not running), f"{label}: accounting closure disagrees with status")
+    if running:
+        require(condition["n_open"] is not None and condition["n_open"] > 0, f"{label}: running needs open queries")
+        require(condition["timestamps"]["closed_at"] is None, f"{label}: running close time")
+    else:
+        require(condition["timestamps"]["closed_at"] is not None, f"{label}: closed condition needs closed_at")
     require(condition["observation_source"] in {"synthetic_fixture", "observed"}, f"{label}: observation source")
     for name in RUN_WHEN_FIELDS:
         require(condition[name] is not None, f"{label}: {name} is required once the condition leaves planned")
     _check_plan_counts(condition, label)
-    _check_closed_partition(condition, label)
+    _check_partition(condition, label, closed=not running)
     _check_confusion(condition, label)
     _check_status_shape(condition, label)
     _check_metric_values(condition, label)
@@ -677,11 +687,13 @@ def _check_plan_counts(condition, label):
     planned = condition["n_queries_planned"]
     benign = condition["n_benign_planned"]
     malicious = condition["n_malicious_planned"]
+    for name in ("n_queries_planned", "n_benign_planned", "n_malicious_planned"):
+        _int(condition[name], f"{label}: {name}", minimum=1)
     require(planned > 0 and benign > 0 and malicious > 0, f"{label}: both classes must be planned")
     require(benign + malicious == planned, f"{label}: planned class counts do not sum to n_queries_planned")
 
 
-def _check_closed_partition(condition, label):
+def _check_partition(condition, label, *, closed=True):
     planned = condition["n_queries_planned"]
     parts = (
         condition["n_valid_predictions"] + condition["n_parse_failures"] + condition["n_context_overflows"]
@@ -689,7 +701,8 @@ def _check_closed_partition(condition, label):
         + condition["n_open"]
     )
     require(parts == planned, f"{label}: terminal dispositions do not partition n_queries_planned")
-    require(condition["n_open"] == 0, f"{label}: closed accounting still has open queries")
+    if closed:
+        require(condition["n_open"] == 0, f"{label}: closed accounting still has open queries")
     require(condition["n_context_overflows"] == condition["n_context_overflows_preflight"] + condition["n_context_overflows_sent"],
             f"{label}: context overflows are not split into preflight and sent")
     failures = (
@@ -701,7 +714,11 @@ def _check_closed_partition(condition, label):
         condition["n_valid_predictions"] + condition["n_parse_failures"] + condition["n_truncated"]
         + condition["n_other_failures"] + condition["n_context_overflows_sent"]
     )
-    require(condition["n_attempted"] == attempted, f"{label}: n_attempted does not match requests at query level")
+    if closed:
+        require(condition["n_attempted"] == attempted, f"{label}: n_attempted does not match requests at query level")
+    else:
+        require(attempted <= condition["n_attempted"] <= attempted + condition["n_open"],
+                f"{label}: running attempts exceed terminal and open queries")
     responses = condition["n_valid_predictions"] + condition["n_parse_failures"] + condition["n_truncated"]
     require(condition["n_responses"] == responses, f"{label}: n_responses does not match received bodies")
     require(condition["n_requests_made"] >= condition["n_attempted"], f"{label}: requests are below attempted queries")
@@ -864,6 +881,8 @@ def expected_unavailable(condition):
             continue
         elif condition["status"] == "planned":
             reasons[name] = "not observed; condition is planned"
+        elif name == "reviewed_aggregate_revision" and condition["status"] == "running":
+            reasons[name] = "condition has not closed"
         elif name == "reviewed_aggregate_revision":
             require(condition["observation_source"] != "observed", "observed rows need a reviewed revision")
             reasons[name] = "synthetic fixture is not a reviewed publication"
@@ -892,7 +911,11 @@ def expected_unavailable(condition):
     return reasons
 
 
-def validate_public_condition(condition, statuses=PUBLIC_STATUSES):
+def validate_public_condition(condition):
+    return _validate_condition(condition, PUBLIC_STATUSES)
+
+
+def _validate_condition(condition, statuses):
     label = condition.get("condition_id", "<missing condition>") if type(condition) is dict else "<condition>"
     _typed_condition_values(condition, label, statuses)
     _check_known_dataset(condition, label)
@@ -1201,8 +1224,42 @@ def _context_fit(counts):
     return "not_checked"
 
 
+def _validate_frozen_plan(condition):
+    """Membership is a registered private input, never inferred from results."""
+    planned = condition.get("planned_queries")
+    if condition.get("n_queries_planned") is None:
+        require(planned is None, "unfrozen plan must have null planned_queries")
+        return
+    _check_plan_counts(condition, condition["condition_id"])
+    require(type(planned) is list, "frozen planned_queries required")
+    require(len(planned) == condition["n_queries_planned"], "frozen plan size")
+    seen = set()
+    for query in planned:
+        require(type(query) is dict and set(query) == set(PLAN_QUERY_FIELDS), "planned query fields")
+        for name in ("query_id", "row_identity"):
+            _ident(query[name], f"planned {name}")
+        require(query["gold_label"] in GOLD_LABELS, "planned gold label")
+        _nonempty(query["membership_hash"], "planned membership_hash")
+        require(query["query_id"] not in seen, "duplicate planned query_id")
+        seen.add(query["query_id"])
+    require(sum(q["gold_label"] == "benign" for q in planned) == condition["n_benign_planned"],
+            "frozen plan class coverage")
+
+
+def _assert_frozen_predictions(condition, rows, counts):
+    _validate_frozen_plan(condition)
+    for name in ("n_queries_planned", "n_benign_planned", "n_malicious_planned"):
+        require(condition.get(name) == counts[name], f"{name} differs from frozen plan")
+    expected = {q["query_id"]: q for q in condition["planned_queries"]}
+    require(set(expected) == {row["query_id"] for row in rows}, "query membership differs from frozen plan")
+    for row in rows:
+        require(all(row[name] == expected[row["query_id"]][name] for name in PLAN_QUERY_FIELDS),
+                "query identity or class differs from frozen plan")
+
+
 def assemble_public_condition(design, predictions, audit=None):
-    """Build one public condition from a design shell and optional private predictions."""
+    """Build a public condition against a frozen private plan and dispositions."""
+    _validate_frozen_plan(design)
     condition = _blank_condition(design)
     status = condition["status"]
     if status == "planned":
@@ -1216,6 +1273,7 @@ def assemble_public_condition(design, predictions, audit=None):
     else:
         require(type(predictions) is list, "closed condition needs predictions")
         counts, tokens = counts_from_predictions(predictions)
+        _assert_frozen_predictions(design, predictions, counts)
         derived = _derive_status(counts)
         require(status == derived, f"{condition.get('condition_id')}: status {status} does not match predictions ({derived})")
         for name in OUTCOME_COUNT_FIELDS:
@@ -1223,9 +1281,6 @@ def assemble_public_condition(design, predictions, audit=None):
                 continue
             if name in counts:
                 condition[name] = counts[name]
-        condition["n_queries_planned"] = counts["n_queries_planned"]
-        condition["n_benign_planned"] = counts["n_benign_planned"]
-        condition["n_malicious_planned"] = counts["n_malicious_planned"]
         condition["n_requests_made"] = counts["n_requests_made"]
         condition["metric_denominator"] = counts["n_valid_predictions"]
         condition["n_open"] = 0
@@ -1285,6 +1340,12 @@ def _walk_public_value(value, found):
 
 def _walk_record(record, allowed, found):
     for key, child in record.items():
+        if key == "planned_queries" and type(child) is list:
+            for query in child:
+                for name in PLAN_QUERY_FIELDS:
+                    if name != "gold_label":
+                        _collect_strings(query[name], found)
+            continue
         if key in SENSITIVE_KEYS or key not in allowed:
             _collect_strings(child, found)
             continue
@@ -1333,6 +1394,24 @@ def export_public_aggregate(run):
         require(type(run.get("model_requests_made")) is int and run["model_requests_made"] > 0,
                 "reviewed export needs observed model requests")
         _nonempty(run.get("reviewed_aggregate_revision"), "reviewed revision")
+    require(run.get("schema_version") == SCHEMA_VERSION and run.get("schema_id") == EVIDENCE_SCHEMA_ID, "run schema")
+    require(run.get("design_issue") == DESIGN_ISSUE and run.get("issue_5_interface") == "validate_then_store", "run interface")
+    _ident(run.get("run_id"), "run_id")
+    for name in ("conditions", "predictions", "audits"):
+        require(type(run.get(name)) is list, f"evidence-backed export requires {name}")
+    private_conditions = []
+    for record in run["conditions"]:
+        require(type(record) is dict and set(CONDITION_FIELD_NAMES + PRIVATE_CONDITION_FIELDS) <= set(record), "private condition fields")
+        condition = {name: record[name] for name in CONDITION_FIELD_NAMES + PRIVATE_CONDITION_FIELDS}
+        validate_private_condition(condition)
+        require(condition["run_id"] == run["run_id"], "condition run_id")
+        private_conditions.append(condition)
+    require(len({c["condition_id"] for c in private_conditions}) == len(private_conditions), "duplicate condition_id")
+    _assert_prediction_rollup(private_conditions, run["predictions"], run["run_id"])
+    _assert_audit_rollup(private_conditions, run["audits"])
+    requests = sum(c["n_requests_made"] or 0 for c in private_conditions)
+    _int(run.get("model_requests_made"), "model_requests_made")
+    require(run["model_requests_made"] == (0 if evidence_class == "synthetic" else requests), "run request rollup")
     sensitive = collect_sensitive_strings(run)
     conditions = [project_public_condition(condition) for condition in run["conditions"]]
     conditions.sort(key=_arm_key)
@@ -1367,15 +1446,18 @@ def export_public_aggregate(run):
     serialized = canonical_json(document)
     for secret in sensitive:
         require(secret not in serialized, "public aggregate contains private evidence")
-    if run.get("predictions") is not None:
-        _assert_prediction_rollup(run["conditions"], run["predictions"])
     return validate_aggregate(document)
 
 
-def _assert_prediction_rollup(conditions, predictions):
+def _assert_prediction_rollup(conditions, predictions, run_id):
     grouped = {}
-    for row in predictions:
-        validate_prediction({name: row[name] for name in PREDICTION_FIELDS})
+    declared = {c["condition_id"] for c in conditions}
+    for record in predictions:
+        require(type(record) is dict and set(PREDICTION_FIELDS) <= set(record), "prediction fields")
+        row = {name: record[name] for name in PREDICTION_FIELDS}
+        validate_prediction(row)
+        require(row["run_id"] == run_id, "prediction run_id")
+        require(row["condition_id"] in declared, "orphan prediction condition_id")
         grouped.setdefault(row["condition_id"], []).append(row)
     for condition in conditions:
         public = project_public_condition(condition)
@@ -1383,7 +1465,11 @@ def _assert_prediction_rollup(conditions, predictions):
         if public["status"] == "planned":
             require(not rows, "planned condition has predictions")
             continue
-        counts, tokens = counts_from_predictions([{name: row[name] for name in PREDICTION_FIELDS} for row in rows])
+        counts, tokens = counts_from_predictions(rows)
+        _assert_frozen_predictions(condition, rows, counts)
+        for row in rows:
+            for name in ("demonstration_ids", "serving_session_id", "endpoint"):
+                require(row[name] == condition[name], f"prediction {name} disagrees with condition")
         for name in OUTCOME_COUNT_FIELDS:
             if name in counts:
                 require(public[name] == counts[name], f"{public['condition_id']}: {name} does not match predictions")
@@ -1396,6 +1482,40 @@ def _assert_prediction_rollup(conditions, predictions):
                 close(public[name], value)
             else:
                 require(public[name] == value, name)
+
+
+def _assert_audit_rollup(conditions, audits):
+    declared = {c["condition_id"]: c for c in conditions}
+    seen = set()
+    audit_ids = set()
+    for audit in audits:
+        require(type(audit) is dict, "audit record")
+        require(audit.get("schema_version") == SCHEMA_VERSION and audit.get("record_type") == "duplicate_audit", "audit schema")
+        _ident(audit.get("audit_id"), "audit_id")
+        require(audit["audit_id"] not in audit_ids, "duplicate audit_id")
+        audit_ids.add(audit["audit_id"])
+        cid = audit.get("condition_id")
+        require(cid in declared and cid not in seen, "orphan or duplicate audit condition_id")
+        seen.add(cid)
+        require(audit.get("matching") in AUDIT_MATCHING, "audit matching")
+        _nonempty(audit.get("population_scope"), "audit population_scope")
+        groups = audit.get("groups")
+        require(type(groups) is list and groups, "audit groups")
+        hashes = set()
+        pairs = []
+        for group in groups:
+            require(type(group) is dict and {"n_benign", "n_malicious", "membership_hash"} <= set(group), "audit group fields")
+            _nonempty(group["membership_hash"], "audit group membership_hash")
+            require(group["membership_hash"] not in hashes, "duplicate audit group membership_hash")
+            hashes.add(group["membership_hash"])
+            pairs.append((group["n_benign"], group["n_malicious"]))
+        summary = dict(declared[cid])
+        _apply_audit(summary, dict(audit, groups=pairs))
+        _check_audit_identity(summary, cid)
+        for name in AUDIT_FIELDS + CROSS_SPLIT_FIELDS:
+            require(declared[cid][name] == summary[name], f"{cid}: {name} disagrees with audit evidence")
+    for cid, condition in declared.items():
+        require((condition["n_rows_audited"] is not None) == (cid in seen), "audit evidence missing or unclaimed")
 
 
 def _fmt_rate(value):
@@ -1503,7 +1623,8 @@ def validate_private_condition(condition):
     extras = set(PRIVATE_CONDITION_FIELDS)
     require(set(condition) == set(CONDITION_FIELD_NAMES) | extras, "private condition fields")
     public = project_public_condition(condition)
-    validate_public_condition(public, statuses=PRIVATE_STATUSES)
+    _validate_condition(public, PRIVATE_STATUSES)
+    _validate_frozen_plan(condition)
     require(condition["record_type"] == "condition", "record_type")
     if public["status"] == "planned":
         require(condition["decoding"] is None, "planned decoding")
@@ -1518,6 +1639,8 @@ def validate_private_condition(condition):
         _int(condition["decoding"]["seed"], "seed")
         require(type(condition["demonstration_ids"]) is list, "demonstration_ids")
         require(len(condition["demonstration_ids"]) == public["demonstration_count"], "demonstration count")
+        require(len(set(condition["demonstration_ids"])) == len(condition["demonstration_ids"]), "duplicate demonstration_id")
+        require(condition["decoding"]["max_output_tokens"] == public["max_output_tokens"], "decoding output limit")
         for item in condition["demonstration_ids"]:
             _ident(item, "demonstration_id")
     reference = condition["private_artifact_reference"]
@@ -1527,9 +1650,6 @@ def validate_private_condition(condition):
     for name in ("serving_session_id", "endpoint", "prompt_template_sha256"):
         if condition[name] is not None:
             _nonempty(condition[name], name)
-    if public["status"] == "running":
-        require(public["accounting_closed"] is False, "running accounting")
-        require(public["paired_analysis_eligible"] is False, "running eligibility")
     return condition
 
 
@@ -1637,7 +1757,7 @@ def _schema_field(name, kind, nullable):
     if kind == "strings":
         return maybe({"type": "array", "items": {"type": "string", "minLength": 1}})
     if kind in {"string_map", "reasons"}:
-        return {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}}
+        return maybe({"type": "object", "additionalProperties": {"type": "string", "minLength": 1}})
     if kind == "label_map":
         return maybe({
             "type": "object",
@@ -1674,6 +1794,15 @@ def condition_schema(private):
     required = list(CONDITION_FIELD_NAMES)
     if private:
         properties.update({
+            "planned_queries": {"anyOf": [
+                {"type": "null"},
+                {"type": "array", "items": {
+                    "type": "object", "additionalProperties": False,
+                    "required": list(PLAN_QUERY_FIELDS),
+                    "properties": {name: ({"enum": list(GOLD_LABELS)} if name == "gold_label" else
+                                          {"type": "string", "minLength": 1}) for name in PLAN_QUERY_FIELDS},
+                }},
+            ]},
             "record_type": {"type": "string", "const": "condition"},
             "private_artifact_reference": {"type": "string", "minLength": 1, "description": "Relative evidence id. Not a public field."},
             "decoding": {"anyOf": [
@@ -1902,8 +2031,9 @@ def write_schemas(directory):
         (directory / name).write_text(canonical_json(document))
 
 
-def _private_condition(public, demonstrations):
+def _private_condition(public, demonstrations, planned_queries):
     private = dict(public)
+    private["planned_queries"] = planned_queries
     private["record_type"] = "condition"
     private["private_artifact_reference"] = f"capacity/runs/{public['run_id']}"
     private["demonstration_ids"] = list(demonstrations)
@@ -1965,7 +2095,8 @@ def _prediction(run_id, condition_id, index, gold, disposition="valid", parsed=N
 def _design(condition_id, feature_set, status, *, dataset="synthetic-phish", dataset_type="phishing",
             split="split-heldout", demos=0, order="A", replicate=1, raw=6, supplied=None,
             labels=None, names=None, excluded=None, reasons=None, verdict=False, arm=None,
-            population="synthetic-heldout-queries", budget=None, limit=4096, policy="synthetic-policy-v0"):
+            population="synthetic-heldout-queries", budget=None, limit=4096, policy="synthetic-policy-v0",
+            planned_labels=None):
     if labels is None:
         labels = ["Class"] if dataset_type == "phishing" else ["Class", "Category", "Family"]
     if supplied is None:
@@ -1981,6 +2112,16 @@ def _design(condition_id, feature_set, status, *, dataset="synthetic-phish", dat
     closed = None if status == "planned" else "2026-11-19T00:00:01Z"
     return {
         "run_id": "synthetic-capacity-demo",
+        "planned_queries": None if planned_labels is None else [
+            {"query_id": f"synthetic-query-{condition_id}-{index:02d}",
+             "row_identity": f"synthetic-row-{condition_id}-{index:02d}",
+             "gold_label": gold,
+             "membership_hash": f"synthetic-membership-{condition_id}-{index:02d}"}
+            for index, gold in enumerate(planned_labels)
+        ],
+        "n_queries_planned": None if planned_labels is None else len(planned_labels),
+        "n_benign_planned": None if planned_labels is None else planned_labels.count("benign"),
+        "n_malicious_planned": None if planned_labels is None else planned_labels.count("malicious"),
         "condition_id": condition_id,
         "dataset_id": dataset,
         "dataset_type": dataset_type,
@@ -2066,11 +2207,8 @@ def build_synthetic_run():
         design = _design(condition_id, feature, status, demos=demos, **kwargs)
         if design["n_requests_budgeted"] is None and status != "planned":
             design["n_requests_budgeted"] = len(pairs) if pairs is not None else 0
-        public = assemble_public_condition(design, pairs and [
-            row for row in pairs
-        ], audit)
-        # assemble consumes prediction dicts; pairs may already be predictions
-        private = _private_condition(public, demonstrations)
+        public = assemble_public_condition(design, pairs, audit)
+        private = _private_condition(public, demonstrations, design["planned_queries"])
         conditions.append(private)
         if pairs:
             predictions.extend(pairs)
@@ -2103,19 +2241,19 @@ def build_synthetic_run():
         "cross_split_overlap_groups": 0,
         "cross_split_overlap_rows": 0,
     }
-    add("features-max", "complete", main_pairs, budget=8, audit=main_audit)
+    add("features-max", "complete", main_pairs, budget=8, audit=main_audit, planned_labels=["benign"] * 4 + ["malicious"] * 4)
 
     reduced_names = ["attr_00", "attr_01"]
     reduced_excluded = ["attr_02", "attr_03", "attr_04", "attr_05"]
     reduced_id = "cap-synthetic-phish-split-heldout-features-reduced-d0-a-r1"
     add("features-reduced", "complete", _valid_rows(run_id, reduced_id, [
         ("benign", "benign"), ("malicious", "malicious"),
-    ], []), supplied=2, names=reduced_names, excluded=reduced_excluded, budget=2)
+    ], []), supplied=2, names=reduced_names, excluded=reduced_excluded, budget=2, planned_labels=["benign", "malicious"])
 
     diagnostic_id = "cap-synthetic-phish-split-heldout-features-diagnostic-d0-a-r1"
     add("features-diagnostic", "complete", _valid_rows(run_id, diagnostic_id, [
         ("benign", "benign"), ("malicious", "malicious"),
-    ], []), verdict=True, arm="diagnostic", budget=2)
+    ], []), verdict=True, arm="diagnostic", budget=2, planned_labels=["benign", "malicious"])
 
     incomplete_id = "cap-synthetic-phish-split-heldout-features-incomplete-demo-d0-a-r1"
     incomplete_rows = [
@@ -2125,20 +2263,20 @@ def build_synthetic_run():
         _prediction(run_id, incomplete_id, 3, "malicious", "context_overflow", attempts=2, stage="sent", input_tokens=130),
         _prediction(run_id, incomplete_id, 4, "malicious", "truncated", input_tokens=140),
     ]
-    add("features-incomplete-demo", "incomplete", incomplete_rows, budget=10)
+    add("features-incomplete-demo", "incomplete", incomplete_rows, budget=10, planned_labels=["benign"] * 3 + ["malicious"] * 2)
 
     failed_id = "cap-synthetic-phish-split-heldout-features-failed-demo-d0-a-r1"
     add("features-failed-demo", "failed", [
         _prediction(run_id, failed_id, 0, "benign", "parse_failure", input_tokens=100),
         _prediction(run_id, failed_id, 1, "malicious", "parse_failure", input_tokens=110),
         _prediction(run_id, failed_id, 2, "malicious", "parse_failure", input_tokens=120),
-    ], budget=3)
+    ], budget=3, planned_labels=["benign", "malicious", "malicious"])
 
     blocked_id = "cap-synthetic-phish-split-heldout-features-blocked-demo-d0-a-r1"
     add("features-blocked-demo", "blocked", [
         _prediction(run_id, blocked_id, index, gold, "context_overflow", stage="preflight")
         for index, gold in enumerate(("benign", "benign", "malicious"))
-    ], budget=3, limit=512)
+    ], budget=3, limit=512, planned_labels=["benign", "benign", "malicious"])
 
     add("features-unfrozen", "planned", None, raw=6)
 
@@ -2146,7 +2284,7 @@ def build_synthetic_run():
     malware_names = ["m_00", "m_01", "m_02", "m_03"]
     add("features-max", "complete", _valid_rows(run_id, precision_id, [
         ("benign", "benign"), ("benign", "benign"), ("malicious", "benign"), ("malicious", "benign"),
-    ], []), dataset="synthetic-malware", dataset_type="malware", raw=4, names=malware_names, budget=4)
+    ], []), dataset="synthetic-malware", dataset_type="malware", raw=4, names=malware_names, budget=4, planned_labels=["benign", "benign", "malicious", "malicious"])
 
     for split, demos, order, replicate, feature in (
         ("split-dev", 0, "A", 1, "features-max"),
@@ -2161,7 +2299,7 @@ def build_synthetic_run():
         add(feature, "complete", _valid_rows(run_id, condition_id, [
             ("benign", "benign"), ("malicious", "malicious"),
         ], demos_ids), split=split, demos=demos, order=order, replicate=replicate,
-           demonstrations=demos_ids, budget=2)
+           demonstrations=demos_ids, budget=2, planned_labels=["benign", "malicious"])
 
     run = {
         "schema_version": SCHEMA_VERSION,

@@ -471,11 +471,18 @@
             "description": "Non-label attributes withheld from the input."
           },
           "exclusion_reasons": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string",
-              "minLength": 1
-            },
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            ],
             "description": "Map of excluded non-label attribute name to reason."
           },
           "encoding_policy": {

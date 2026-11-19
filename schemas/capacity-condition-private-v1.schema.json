@@ -120,7 +120,8 @@
     "demonstration_ids",
     "serving_session_id",
     "endpoint",
-    "prompt_template_sha256"
+    "prompt_template_sha256",
+    "planned_queries"
   ],
   "properties": {
     "schema_version": {
@@ -334,11 +335,18 @@
       "description": "Non-label attributes withheld from the input."
     },
     "exclusion_reasons": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string",
-        "minLength": 1
-      },
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ],
       "description": "Map of excluded non-label attribute name to reason."
     },
     "encoding_policy": {
@@ -1320,6 +1328,46 @@
       "type": "boolean",
       "const": false,
       "description": "Always false. Pairing evidence stays in private predictions."
+    },
+    "planned_queries": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "query_id",
+              "row_identity",
+              "gold_label",
+              "membership_hash"
+            ],
+            "properties": {
+              "query_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "row_identity": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gold_label": {
+                "enum": [
+                  "benign",
+                  "malicious"
+                ]
+              },
+              "membership_hash": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
     },
     "record_type": {
       "type": "string",

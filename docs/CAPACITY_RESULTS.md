@@ -65,13 +65,15 @@ Each public condition carries the fields below. The JSON Schemas and `scripts/ca
 
 `result_arm` is `pending`, `audited_generalization` or `diagnostic`. A diagnostic arm has `identity_or_verdict_features_present: true` and cannot be eligible for paired inference. `observation_source` is `not_run`, `synthetic_fixture` or `observed`.
 
-Private condition records add `private_artifact_reference`, `decoding`, `demonstration_ids`, `serving_session_id`, `endpoint` and `prompt_template_sha256`. Private predictions add the query id, row identity, pair-group id, prompt and response hashes, membership hash, raw artifact names and per-query attempt count. Those names are not on the public allowlist.
+Private condition records add `planned_queries`, `private_artifact_reference`, `decoding`, `demonstration_ids`, `serving_session_id`, `endpoint` and `prompt_template_sha256`. Private predictions add the query id, row identity, pair-group id, prompt and response hashes, membership hash, raw artifact names and per-query attempt count. Those names are not on the public allowlist.
+
+`planned_queries` is registered before collecting predictions. It contains one object per query with `query_id`, `row_identity`, `gold_label` and `membership_hash`. Its length and class totals must match the registered planned counts. It is null only for an unfrozen planned cell. The builder and private exporter require exactly one disposition per frozen query, including explicit failures or `not_attempted` records; missing rows are rejected. Query identities, membership hashes and class labels must match the frozen list even when a substituted result set has the same size and class balance. Issue #5 owns immutable persistence of this registration.
 
 Known FeSAD ids keep the registered column counts when those fields are present: Git Evo 46/45, Mendeley Evo 27/26, Kaggle Evo 21/20, Kaggle Gen 17/16, Kaggle ModBaseSet 49/48, Hussain 77/74. Hussain's excluded label columns are exactly Class, Category and Family, and none of them may appear in the model input. Provenance and 0/1 polarity remain #8. This check does not verify them.
 
 ## Statuses and nulls
 
-Public statuses are `planned`, `blocked`, `incomplete`, `failed` and `complete`. Private in-progress records may also be `running`; a public aggregate rejects them.
+Public statuses are `planned`, `blocked`, `incomplete`, `failed` and `complete`. Private in-progress records may also be `running`; a public aggregate rejects them. Running snapshots require a frozen plan, positive `n_open`, open accounting, no close timestamp and false paired eligibility. Terminal dispositions plus open queries partition the plan. Attempted queries include terminal attempts and up to `n_open` outstanding sent queries; request totals must cover those attempts and stay within budget. Confusion counts and metrics describe valid terminal results available so far. Missing token/latency observations carry the same explicit reasons as closed records. An observed running snapshot does not yet require a reviewed publication revision.
 
 | Status | Accounting | What the metrics mean |
 |---|---|---|
@@ -116,6 +118,8 @@ Truncated responses use policy `reject_truncated` and are not scored. Context fi
 
 For each exact projected vector g, count n_g0 and n_g1. A duplicate group has size >1; a conflicting group contains both labels. Duplicate excess = sum(size-1); rows in duplicate groups = sum(size), which are different measures. Unavoidable errors = sum(min(n_g0,n_g1)); empirical deterministic accuracy ceiling = sum(max(n_g0,n_g1)) / N = 1 - unavoidable_errors/N. This is a ceiling for the audited empirical distribution under identical visible input and no record identity, not a bound on all future data or stochastic responses. State the population (source, split, or held-out sample) for every ceiling.
 
+Binary minority counts must satisfy `n_conflicting_groups <= n_unavoidable_errors` and `2 * n_unavoidable_errors <= n_rows_in_conflicting_groups`. Each duplicate group needs at least two rows; conflict rows must leave enough rows for all other duplicate groups. If all duplicate groups conflict, their row totals must agree. These are aggregate feasibility checks; they cannot establish the underlying group memberships.
+
 The audited row count is not the query count. A ceiling without `ceiling_population_scope` and `audit_matching` (`exact` or `approximate`) is invalid. Approximate matching stays labelled and is not treated as exact. Cross-split overlap is a separate pair of counts. Membership hashes and per-group row lists stay under `private/capacity/audits/`.
 
 Audit raw non-label vectors and exact model-visible vectors after encoding, rounding, missing-value treatment and feature selection. Use exact numeric canonicalization; any approximate matching is separately labelled. Audit both within and across source splits and variants, including prior pilot queries/demonstrations. Do not repair contradictory labels by majority vote or remove hard cases silently. Freeze a policy before inference, preserving the raw audit; any conflict-free subset is a separately reported population. Group identical vectors across all compared feature projections when freezing paired query/demo splits, or document infeasibility and report separate unpaired analyses.
@@ -128,7 +132,9 @@ Supplied names, excluded names and exclusion reasons must partition `n_non_label
 
 ## Exporter
 
-`export_public_aggregate` copies the public field list and drops everything else: private paths, row and query identities, pair ids, demonstration ids, membership hashes, prompt and response hashes, raw prompts and responses, decoding, session ids and endpoints. It then scans the projected JSON for those private strings and for the disclosure patterns in `scripts/check_public_tree.py`. A synthetic run cannot be relabelled as a reviewed aggregate. Public top-level fields link issue 7, `docs/CAPACITY_RESULTS.md`, `docs/requests/06-capacity-output-contract.md`, the accounting policy and the freeze id.
+`validate_aggregate` validates an aggregate without private evidence. `export_public_aggregate` is the evidence-backed path: conditions, predictions and audits must all be present as lists (an empty audit list is valid only when no audit is claimed). It validates the private condition and prediction interfaces, run and condition membership, frozen query and class coverage, ordered demonstration ids, session/endpoint agreement and decoding output limit. It reconciles all condition request totals, including retries; observed run totals must equal their sum. Synthetic per-condition request counts are simulated and the actual run request total remains zero. Orphan or duplicate records are rejected. Audit summaries and ceilings must exactly match recomputation from validated per-group binary label counts, with unique group membership hashes and matching population/method metadata. This checks supplied evidence consistency; provenance, the correctness of vector grouping and cross-arm pairing still need private review.
+
+The exporter then copies the public field list and drops everything else: private paths, row and query identities, pair ids, demonstration ids, membership hashes, prompt and response hashes, raw prompts and responses, decoding, session ids and endpoints. It then scans the projected JSON for those private strings and for the disclosure patterns in `scripts/check_public_tree.py`. A synthetic run cannot be relabelled as a reviewed aggregate. Public top-level fields link issue 7, `docs/CAPACITY_RESULTS.md`, `docs/requests/06-capacity-output-contract.md`, the accounting policy and the freeze id.
 
 ## Contract amendments
 
@@ -156,12 +162,13 @@ The fixture calls no model. Its per-condition `n_requests_made` values are simul
 ```bash
 python3 scripts/render_capacity.py --synthetic
 python3 scripts/render_capacity.py --planning
-python3 -m unittest tests.test_capacity_contract -v
+python3 -m pip install -r requirements-test.txt
+python3 -m unittest tests.test_capacity_contract tests.test_capacity_review -v
 ```
 
 ## Verification
 
-Recorded on 2026-11-19 for this contract. No model was called. `results/public/capacity-results.json` was not created. Primary-v1 files, `results/public/pilot-v2.json`, `docs/PILOT_V2.md` and `results/public/capacity-plan.json` were not edited.
+Updated on 2026-11-19 after the five review fixes and reconciliation with main `cf8af15`. Issue #7 remains open and the implementation remains unmerged pending review. Test dependencies are pinned in `requirements-test.txt` and installed explicitly in CI. The original 42 tests alone did not catch the review findings; the added regressions exercise frozen membership, evidence reconciliation, schema instances, running snapshots and conflict bounds. No model was called. `results/public/capacity-results.json` was not created. Primary-v1 files, `results/public/pilot-v2.json`, `docs/PILOT_V2.md` and `results/public/capacity-plan.json` were not edited.
 
 ```bash
 python3 -m unittest discover -s tests -v
@@ -175,11 +182,11 @@ git diff --cached --check
 
 | Command | Outcome |
 |---|---|
-| `python3 -m unittest discover -s tests -v` | 42 tests, OK, 1.971s |
+| `python3 -m unittest discover -s tests -v` | 59 tests, OK, including 17 review regressions and independent Draft 2020-12 validation |
 | `python3 scripts/verify_baseline.py` | Exit 0. Verified public aggregate arithmetic: 8 conditions, 800 responses, 200 distinct query rows. |
 | `python3 scripts/render_baseline.py --check` | Exit 0. Baseline report matches the aggregate JSON. |
 | `python3 -c "from fesa_prompts import verify_freeze; verify_freeze()"` | Exit 0. Freeze check returned without error. |
-| `python3 scripts/check_public_tree.py` | Public-tree checks passed for 49 tracked text files; manual review still required. |
+| `python3 scripts/check_public_tree.py` | Public-tree checks passed for the staged public tree; manual review still required. |
 | `git diff --cached --check` | No whitespace errors. |
 
 The staged disclosure scan found the path `results/public/capacity-results.json` only as the reserved name in docs, schemas and tests. The file is absent. The scan found no credentials, home paths, email addresses, GPU hostnames or `private/datasets` paths.
